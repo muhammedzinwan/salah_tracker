@@ -304,3 +304,11 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Added 4 missing trailing commas in `stats_chart.dart` for proper formatting
   - Fixed 1 unnecessary string interpolation brace in `prayer_time_service.dart:138`
   - **Result: Zero flutter analyze issues - 100% code quality compliance**
+
+### Fixed - Build System
+- **Fixed iOS Podfile for cross-platform compatibility**
+  - Updated `flutter_root` function in `ios/Podfile` to prioritize `ENV['FLUTTER_ROOT']` environment variable
+  - Resolves error: "cannot load such file -- /path/to/ios/C:\flutter\flutter/packages/flutter_tools/bin/podhelper"
+  - Allows GitHub Actions macOS runner to correctly locate Flutter SDK
+  - Maintains backward compatibility with local development (falls back to reading Generated.xcconfig)
+  - Fixes mixed Windows/Unix path issue that broke CI/CD builds
