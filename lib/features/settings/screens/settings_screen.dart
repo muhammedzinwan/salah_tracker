@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/providers/app_providers.dart';
@@ -133,7 +131,7 @@ class SettingsScreen extends ConsumerWidget {
             SettingsSection(
               title: 'ABOUT',
               children: [
-                SettingsTile(
+                const SettingsTile(
                   icon: CupertinoIcons.info_circle_fill,
                   title: 'App Version',
                   subtitle: AppConstants.appVersion,
@@ -181,7 +179,6 @@ class SettingsScreen extends ConsumerWidget {
 
   void _showExportDialog(BuildContext context, dynamic repository) {
     final data = repository.exportData();
-    final jsonString = const JsonEncoder.withIndent('  ').convert(data);
 
     showCupertinoDialog(
       context: context,

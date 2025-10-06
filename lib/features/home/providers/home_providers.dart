@@ -6,7 +6,6 @@ import '../../prayers/models/prayer_time.dart';
 import '../../prayers/models/prayer_log.dart';
 import '../../prayers/models/prayer_status.dart';
 import '../../prayers/repositories/prayer_repository.dart';
-import '../../../core/utils/date_utils.dart';
 
 // Current location provider
 final currentLocationProvider = FutureProvider((ref) async {

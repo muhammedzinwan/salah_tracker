@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/utils/date_utils.dart';
-import '../../../features/prayers/models/prayer.dart';
 import '../../../features/prayers/models/prayer_status.dart';
 import '../providers/home_providers.dart';
 import 'quick_log_modal.dart';

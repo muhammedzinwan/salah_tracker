@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:table_calendar/table_calendar.dart';
-import '../../../core/theme/app_theme.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/utils/date_utils.dart';
 import '../providers/calendar_providers.dart';

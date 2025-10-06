@@ -66,14 +66,26 @@ class StatsChart extends ConsumerWidget {
                     borderData: FlBorderData(show: false),
                     gridData: const FlGridData(show: false),
                     barGroups: [
-                      _makeBarGroup(0, stats.jamaahCount.toDouble(),
-                          PrayerStatus.jamaah.color),
                       _makeBarGroup(
-                          1, stats.adahCount.toDouble(), PrayerStatus.adah.color),
-                      _makeBarGroup(2, stats.qalahCount.toDouble(),
-                          PrayerStatus.qalah.color),
-                      _makeBarGroup(3, stats.missedCount.toDouble(),
-                          PrayerStatus.notPerformed.color),
+                        0,
+                        stats.jamaahCount.toDouble(),
+                        PrayerStatus.jamaah.color,
+                      ),
+                      _makeBarGroup(
+                        1,
+                        stats.adahCount.toDouble(),
+                        PrayerStatus.adah.color,
+                      ),
+                      _makeBarGroup(
+                        2,
+                        stats.qalahCount.toDouble(),
+                        PrayerStatus.qalah.color,
+                      ),
+                      _makeBarGroup(
+                        3,
+                        stats.missedCount.toDouble(),
+                        PrayerStatus.notPerformed.color,
+                      ),
                     ],
                   ),
                 ),

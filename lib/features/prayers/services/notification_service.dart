@@ -99,7 +99,7 @@ class NotificationService {
       });
 
       // Android notification details with actions
-      final androidDetails = AndroidNotificationDetails(
+      const androidDetails = AndroidNotificationDetails(
         AppConstants.notificationChannelId,
         AppConstants.notificationChannelName,
         channelDescription: AppConstants.notificationChannelDescription,
@@ -107,22 +107,22 @@ class NotificationService {
         priority: Priority.high,
         playSound: true,
         actions: <AndroidNotificationAction>[
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             AppConstants.actionJamaah,
             'Jamaah',
             showsUserInterface: false,
           ),
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             AppConstants.actionAdah,
             'Adah',
             showsUserInterface: false,
           ),
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             AppConstants.actionQalah,
             'Qalah',
             showsUserInterface: false,
           ),
-          const AndroidNotificationAction(
+          AndroidNotificationAction(
             AppConstants.actionLater,
             'Later',
             showsUserInterface: false,
@@ -138,7 +138,7 @@ class NotificationService {
         presentSound: true,
       );
 
-      final notificationDetails = NotificationDetails(
+      const notificationDetails = NotificationDetails(
         android: androidDetails,
         iOS: iosDetails,
       );

@@ -7,7 +7,6 @@ import '../../features/prayers/repositories/prayer_repository.dart';
 import '../../features/prayers/services/location_service.dart';
 import '../../features/prayers/services/prayer_time_service.dart';
 import '../../features/prayers/services/notification_service.dart';
-import '../constants/app_constants.dart';
 
 // SharedPreferences Provider
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {

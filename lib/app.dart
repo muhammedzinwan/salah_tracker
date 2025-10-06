@@ -80,10 +80,10 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return const CupertinoApp(
       title: AppConstants.appName,
       theme: AppTheme.lightTheme,
-      home: const MainTabView(),
+      home: MainTabView(),
       debugShowCheckedModeBanner: false,
     );
   }

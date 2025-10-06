@@ -8,8 +8,6 @@ import 'app.dart';
 import 'core/providers/app_providers.dart';
 import 'core/constants/app_constants.dart';
 import 'features/prayers/models/prayer_log.dart';
-import 'features/prayers/models/prayer.dart';
-import 'features/prayers/models/prayer_status.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,29 +30,6 @@ void main() async {
 
   // Initialize FlutterLocalNotifications
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  // Set up notification categories for iOS
-  final iosNotificationCategory = DarwinNotificationCategory(
-    AppConstants.notificationCategoryId,
-    actions: <DarwinNotificationAction>[
-      DarwinNotificationAction.plain(
-        AppConstants.actionJamaah,
-        'Jamaah',
-      ),
-      DarwinNotificationAction.plain(
-        AppConstants.actionAdah,
-        'Adah',
-      ),
-      DarwinNotificationAction.plain(
-        AppConstants.actionQalah,
-        'Qalah',
-      ),
-      DarwinNotificationAction.plain(
-        AppConstants.actionLater,
-        'Later',
-      ),
-    ],
-  );
 
   // Initialize notifications with iOS categories
   await flutterLocalNotificationsPlugin
