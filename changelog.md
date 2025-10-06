@@ -273,7 +273,7 @@ All notable changes to the Salah Tracker project will be documented in this file
 - **Created GitHub Actions workflow for iOS builds**
   - Workflow file: `.github/workflows/ios-build.yml`
   - Runs on macOS-latest with Flutter 3.24.0
-  - Automated checks on push and pull requests to main branch
+  - Automated checks on push and pull requests to master branch
   - Steps include: checkout, Flutter setup, doctor check, dependency installation, code analysis, and unsigned iOS build
   - Code analysis set to continue-on-error to avoid blocking builds on warnings
   - Artifacts uploaded for successful builds (Runner.app)
