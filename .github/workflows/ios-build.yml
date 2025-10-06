@@ -8,16 +8,17 @@ on:
 
 jobs:
   build-ios:
+    name: Build iOS App
     runs-on: macos-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.24.0'  # change to your version
+        flutter-version: '3.24.0'
         channel: 'stable'
 
     - name: Flutter doctor
@@ -28,7 +29,7 @@ jobs:
 
     - name: Analyze code
       run: flutter analyze
-      continue-on-error: true  # won't fail the build, just shows warnings
+      continue-on-error: true
 
     - name: Build iOS (unsigned)
       run: |
@@ -37,9 +38,18 @@ jobs:
         cd ..
         flutter build ios --release --no-codesign
 
-    - name: Upload IPA (if build succeeds)
-      uses: actions/upload-artifact@v3
+    - name: Create IPA
+      run: |
+        mkdir Payload
+        cd build/ios/iphoneos
+        cp -r Runner.app ../../../Payload
+        cd ../../..
+        zip -r app.ipa Payload
+
+    - name: Upload IPA artifact
+      uses: actions/upload-artifact@v4
       if: success()
       with:
         name: ios-build
-        path: build/ios/iphoneos/Runner.app
+        path: app.ipa
+        retention-days: 30

@@ -276,5 +276,8 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Automated checks on push and pull requests to master branch
   - Steps include: checkout, Flutter setup, doctor check, dependency installation, code analysis, and unsigned iOS build
   - Code analysis set to continue-on-error to avoid blocking builds on warnings
-  - Artifacts uploaded for successful builds (Runner.app)
+  - Creates IPA file from Runner.app for distribution
+  - Uses `actions/upload-artifact@v4` (latest version, up to 98% faster than v3)
+  - Uses `actions/checkout@v4` for repository checkout
+  - Artifacts retained for 30 days
   - Uses CocoaPods for iOS dependency management
