@@ -1,0 +1,203 @@
+# NEYOZYN PROPRIETARY SOFTWARE LICENSE AGREEMENT
+
+Version 1.0  
+Effective Date: 01/01/2025  
+Company: Neyozyn LLP  
+
+---
+
+## 1. DEFINITIONS
+
+"Software" means any and all computer programs, applications, code, scripts, documentation, and related materials developed, owned, or distributed by Neyozyn Corporation, including but not limited to source code, object code, executable files, libraries, APIs, user interfaces, and accompanying documentation.
+
+"Licensee" means the individual or entity that has been granted rights to use the Software under this Agreement.
+
+"Neyozyn" or "Company" means Neyozyn Corporation, its subsidiaries, affiliates, successors, and assigns.
+
+"Authorized Use" means use of the Software strictly in accordance with the terms and limitations set forth in this Agreement.
+
+"Confidential Information" includes the Software, its source code, algorithms, methods, techniques, processes, and any information related to the Software's functionality, performance, or implementation.
+
+---
+
+## 2. GRANT OF LICENSE
+
+Subject to the terms and conditions of this Agreement, Neyozyn grants Licensee a non-exclusive, non-transferable, revocable, and limited license to use the Software solely for Licensee's internal business purposes and strictly in accordance with the terms herein.
+
+This license does NOT grant rights to:
+- Distribute, redistribute, or share the Software
+- Copy, duplicate, or replicate the Software
+- Sublicense, rent, lease, or loan the Software
+- Sell, transfer, or assign rights to the Software
+- Modify, adapt, or create derivative works
+- Reverse engineer, decompile, or disassemble the Software
+
+---
+
+## 3. STRICT PROHIBITIONS
+
+### 3.1 Redistribution Prohibition
+Licensee is STRICTLY PROHIBITED from redistributing the Software in any form, whether in whole or in part, whether modified or unmodified, whether for commercial or non-commercial purposes.
+
+### 3.2 Copying Prohibition
+Licensee shall NOT copy, duplicate, reproduce, or replicate the Software except for the limited purpose of creating a single backup copy for archival purposes only. Any backup copy must be marked with appropriate copyright notices and shall be subject to all terms of this Agreement.
+
+### 3.3 Sharing Prohibition
+Licensee shall NOT share, provide access to, or otherwise make available the Software to any third party, including but not limited to:
+- Employees not specifically authorized under this license
+- Contractors, consultants, or business partners
+- Other departments or divisions within Licensee's organization
+- Any external parties or entities
+
+### 3.4 Sale and Transfer Prohibition
+Licensee is ABSOLUTELY PROHIBITED from selling, transferring, assigning, or otherwise disposing of any rights to the Software or any portion thereof.
+
+### 3.5 Public Access Prohibition
+Licensee shall NOT place the Software on any publicly accessible server, network, or cloud platform where unauthorized persons could gain access.
+
+---
+
+## 4. INTELLECTUAL PROPERTY RIGHTS
+
+### 4.1 Ownership
+Neyozyn retains all right, title, and interest in and to the Software, including all intellectual property rights therein. The Software is protected by copyright, trade secret, patent, and other intellectual property laws.
+
+### 4.2 No Transfer of Ownership
+This Agreement does not transfer any ownership rights in the Software to Licensee. All rights not expressly granted herein are reserved by Neyozyn.
+
+### 4.3 Proprietary Notices
+Licensee shall not remove, alter, or obscure any proprietary notices, labels, or marks on the Software.
+
+---
+
+## 5. SECURITY AND CONFIDENTIALITY
+
+### 5.1 Confidentiality Obligations
+Licensee acknowledges that the Software contains valuable trade secrets and confidential information of Neyozyn. Licensee agrees to maintain the confidentiality of the Software and shall not disclose any aspect of the Software to third parties.
+
+### 5.2 Security Measures
+Licensee shall implement and maintain reasonable security measures to prevent unauthorized access to, copying of, or disclosure of the Software, including but not limited to:
+- Secure storage systems with access controls
+- User authentication and authorization protocols
+- Network security measures
+- Physical security of devices containing the Software
+
+### 5.3 Employee/Agent Obligations
+Licensee shall ensure that all employees and agents with access to the Software are bound by confidentiality obligations at least as restrictive as those contained herein.
+
+---
+
+## 6. USAGE RESTRICTIONS
+
+### 6.1 Authorized Users
+Use of the Software is limited to specifically authorized personnel designated by Licensee and approved by Neyozyn.
+
+### 6.2 Geographic Limitations
+Use of the Software is restricted to the geographic territory specified in the accompanying license certificate or purchase agreement.
+
+### 6.3 Scope Limitations
+Licensee may use the Software only for the specific purposes and within the scope defined in the accompanying documentation or purchase agreement.
+
+### 6.4 Compliance Monitoring
+Neyozyn reserves the right to monitor compliance with this Agreement through technical means or audit procedures.
+
+---
+
+## 7. TERMINATION
+
+### 7.1 Termination for Breach
+This Agreement shall terminate immediately upon any breach by Licensee of any term or condition herein, without notice from Neyozyn.
+
+### 7.2 Termination at Will
+Neyozyn may terminate this Agreement at any time, with or without cause, upon thirty (30) days written notice to Licensee.
+
+### 7.3 Effect of Termination
+Upon termination:
+- All rights granted to Licensee shall immediately cease
+- Licensee shall immediately cease all use of the Software
+- Licensee shall return or destroy all copies of the Software
+- Licensee shall provide written certification of compliance with destruction requirements
+
+---
+
+## 8. ENFORCEMENT AND REMEDIES
+
+### 8.1 Liquidated Damages
+Licensee acknowledges that any breach of this Agreement would cause irreparable harm to Neyozyn. In addition to other remedies, Licensee agrees to pay liquidated damages of ₹75,00,000 (Seventy-Five Lakhs Indian Rupees) for each instance of unauthorized redistribution, copying, or sharing of the Software.
+
+### 8.2 Injunctive Relief
+Neyozyn shall be entitled to seek injunctive relief to prevent any breach or threatened breach of this Agreement without posting bond or proving actual damages.
+
+### 8.3 Legal Fees
+The prevailing party in any legal action to enforce this Agreement shall be entitled to recover reasonable attorneys' fees and costs.
+
+---
+
+## 9. WARRANTIES AND DISCLAIMERS
+
+### 9.1 Disclaimer of Warranties
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. NEYOZYN DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+### 9.2 No Support Obligation
+Neyozyn has no obligation to provide support, maintenance, updates, or modifications to the Software unless separately agreed in writing.
+
+---
+
+## 10. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL NEYOZYN BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR USE, ARISING OUT OF OR RELATING TO THIS AGREEMENT OR THE SOFTWARE, REGARDLESS OF THE THEORY OF LIABILITY.
+
+NEYOZYN'S TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT PAID BY LICENSEE FOR THE SOFTWARE.
+
+---
+
+## 11. GENERAL PROVISIONS
+
+### 11.1 Governing Law
+This Agreement shall be governed by and construed in accordance with the laws of India, without regard to conflict of law principles.
+
+### 11.2 Jurisdiction and Venue
+Any legal action arising out of this Agreement shall be brought exclusively in the courts of [City/State], India.
+
+### 11.3 Severability
+If any provision of this Agreement is held invalid or unenforceable, the remainder shall continue in full force and effect.
+
+### 11.4 Entire Agreement
+This Agreement constitutes the entire agreement between the parties and supersedes all prior agreements relating to the subject matter herein.
+
+### 11.5 Amendment
+This Agreement may only be amended by a written instrument signed by both parties.
+
+### 11.6 Assignment
+Licensee may not assign this Agreement without the prior written consent of Neyozyn. Neyozyn may assign this Agreement without restriction.
+
+### 11.7 Indian Legal Compliance
+This Agreement shall be interpreted and enforced in accordance with the Indian Contract Act, 1872, the Copyright Act, 1957, and other applicable Indian laws. Any provisions inconsistent with mandatory Indian law shall be modified to the minimum extent necessary to ensure compliance.
+
+---
+
+## 12. COMPLIANCE AND REPORTING
+
+### 12.1 Usage Reports
+Licensee shall provide Neyozyn with usage reports as requested, detailing the number of users, installations, and usage patterns.
+
+### 12.2 Audit Rights
+Neyozyn reserves the right to audit Licensee's use of the Software upon reasonable notice during normal business hours.
+
+### 12.3 Compliance Certification
+Licensee shall provide annual written certification of compliance with all terms of this Agreement.
+
+---
+
+BY USING THE SOFTWARE, LICENSEE ACKNOWLEDGES THAT THEY HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY ALL TERMS AND CONDITIONS OF THIS AGREEMENT.
+
+---
+
+Neyozyn LLP  
+neyozyn.com  
+
+© [YEAR] Neyozyn L.L.P. All Rights Reserved.
+
+---
+
+This license agreement is proprietary and confidential to Neyozyn Corporation. Unauthorized reproduction or distribution of this agreement is strictly prohibited.
