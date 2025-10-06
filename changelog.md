@@ -266,3 +266,15 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Settings screen: Consistent background and navigation styling
   - All navigation bars: Removed borders, updated text styling with semi-bold weight
   - Unified light background color across all screens
+
+## [1.0.5] - 2025-10-07
+
+### Added - CI/CD
+- **Created GitHub Actions workflow for iOS builds**
+  - Workflow file: `.github/workflows/ios-build.yml`
+  - Runs on macOS-latest with Flutter 3.24.0
+  - Automated checks on push and pull requests to main branch
+  - Steps include: checkout, Flutter setup, doctor check, dependency installation, code analysis, and unsigned iOS build
+  - Code analysis set to continue-on-error to avoid blocking builds on warnings
+  - Artifacts uploaded for successful builds (Runner.app)
+  - Uses CocoaPods for iOS dependency management

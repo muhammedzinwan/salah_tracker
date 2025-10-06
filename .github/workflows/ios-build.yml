@@ -1,0 +1,45 @@
+name: iOS Build Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.0'  # change to your version
+        channel: 'stable'
+
+    - name: Flutter doctor
+      run: flutter doctor -v
+
+    - name: Get dependencies
+      run: flutter pub get
+
+    - name: Analyze code
+      run: flutter analyze
+      continue-on-error: true  # won't fail the build, just shows warnings
+
+    - name: Build iOS (unsigned)
+      run: |
+        cd ios
+        pod install
+        cd ..
+        flutter build ios --release --no-codesign
+
+    - name: Upload IPA (if build succeeds)
+      uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: ios-build
+        path: build/ios/iphoneos/Runner.app
