@@ -312,3 +312,11 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Allows GitHub Actions macOS runner to correctly locate Flutter SDK
   - Maintains backward compatibility with local development (falls back to reading Generated.xcconfig)
   - Fixes mixed Windows/Unix path issue that broke CI/CD builds
+
+### Fixed - CI/CD Workflow
+- **Fixed missing Xcode project files in GitHub Actions**
+  - Added `flutter create --platforms=ios .` step to generate missing `Runner.xcodeproj`
+  - Resolves error: "Unable to find the Xcode project /path/to/ios/Runner.xcodeproj"
+  - Added `flutter precache --ios` to ensure iOS build artifacts are downloaded
+  - Simplified build process: `flutter build ios` now handles pod install automatically
+  - Workflow now generates required iOS project structure during CI/CD build

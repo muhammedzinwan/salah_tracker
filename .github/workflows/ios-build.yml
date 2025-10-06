@@ -31,12 +31,14 @@ jobs:
       run: flutter analyze
       continue-on-error: true
 
+    - name: Generate iOS project files
+      run: flutter create --platforms=ios .
+
+    - name: Precache iOS artifacts
+      run: flutter precache --ios
+
     - name: Build iOS (unsigned)
-      run: |
-        cd ios
-        pod install
-        cd ..
-        flutter build ios --release --no-codesign
+      run: flutter build ios --release --no-codesign
 
     - name: Create IPA
       run: |
