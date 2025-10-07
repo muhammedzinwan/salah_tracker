@@ -386,3 +386,36 @@ All notable changes to the Salah Tracker project will be documented in this file
 - **Version bumped to 1.0.1+2** for AltStore updates
   - Version name: 1.0.1 (user-facing)
   - Build number: 2 (for app store/sideloading tracking)
+
+## [1.0.2] - 2025-10-07 (Build 3)
+
+### Fixed - iOS Notifications
+- **Fixed iOS notification action buttons not appearing**
+  - Resolved conflicting iOS notification initialization between main.dart and notification_service.dart
+  - Removed duplicate iOS-specific initialization from main.dart (lines 34-70)
+  - Updated NotificationService.initialize() to accept iosNotificationCategories parameter
+  - Moved iOS notification category definitions to app.dart's _initializeApp() method
+  - iOS notifications now properly initialize with action buttons (Jamaah, Adah, Qalah, Missed)
+  - Permissions (alert, badge, sound) now correctly requested on iOS
+  - Test notification feature now works on iOS devices
+
+### Changed - Home Screen UI
+- **Simplified home screen layout**
+  - Removed monthly statistics card from home screen
+  - Home screen now shows only: Next Prayer Card and Today's Prayers List
+  - Keeps home page focused and simple
+  - Monthly statistics remain available on dedicated Statistics screen
+
+### Changed - Settings Screen UI
+- **Left-aligned Settings title**
+  - Settings navigation bar title now left-aligned with larger font size (34px)
+  - Matches iOS large title design pattern
+  - More consistent with modern mobile UI conventions
+
+### Code Quality
+- **Zero flutter analyze issues** in lib/ directory - 100% code quality compliance
+
+### Version Info
+- **Version bumped to 1.0.1+3** for next build update
+  - Version name: 1.0.1 (user-facing)
+  - Build number: 3 (internal tracking)

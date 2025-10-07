@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
 import '../widgets/next_prayer_card.dart';
 import '../widgets/today_prayers_list.dart';
-import '../widgets/monthly_stats_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -23,8 +22,6 @@ class HomeScreen extends ConsumerWidget {
             NextPrayerCard(),
             SizedBox(height: 24),
             TodayPrayersList(),
-            SizedBox(height: 24),
-            MonthlyStatsCard(),
             SizedBox(height: 20),
           ],
         ),

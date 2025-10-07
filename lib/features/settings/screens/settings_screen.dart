@@ -21,11 +21,18 @@ class SettingsScreen extends ConsumerWidget {
     return CupertinoPageScaffold(
       backgroundColor: AppColors.background,
       navigationBar: const CupertinoNavigationBar(
-        middle: Text(
-          'Settings',
-          style: TextStyle(
-            fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 4),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Settings',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 34,
+                color: AppColors.textPrimary,
+              ),
+            ),
           ),
         ),
         backgroundColor: AppColors.secondaryBackground,

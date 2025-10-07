@@ -24,10 +24,36 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
   }
 
   Future<void> _initializeApp() async {
+    // Define iOS notification categories with action buttons
+    final iosNotificationCategories = <DarwinNotificationCategory>[
+      DarwinNotificationCategory(
+        AppConstants.notificationCategoryId,
+        actions: <DarwinNotificationAction>[
+          DarwinNotificationAction.plain(
+            AppConstants.actionJamaah,
+            'Jamaah',
+          ),
+          DarwinNotificationAction.plain(
+            AppConstants.actionAdah,
+            'Adah',
+          ),
+          DarwinNotificationAction.plain(
+            AppConstants.actionQalah,
+            'Qalah',
+          ),
+          DarwinNotificationAction.plain(
+            AppConstants.actionNotPerformed,
+            'Missed',
+          ),
+        ],
+      ),
+    ];
+
     // Initialize notification service
     final notificationService = ref.read(notificationServiceProvider);
     await notificationService.initialize(
       onNotificationTap: _handleNotificationTap,
+      iosNotificationCategories: iosNotificationCategories,
     );
 
     // Schedule today's prayers

@@ -15,18 +15,20 @@ class NotificationService {
   /// Initialize notification service
   Future<void> initialize({
     required Function(NotificationResponse) onNotificationTap,
+    required List<DarwinNotificationCategory> iosNotificationCategories,
   }) async {
     // Android initialization
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOS initialization
-    const iosSettings = DarwinInitializationSettings(
+    // iOS initialization with action categories
+    final iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      notificationCategories: iosNotificationCategories,
     );
 
-    const initSettings = InitializationSettings(
+    final initSettings = InitializationSettings(
       android: androidSettings,
       iOS: iosSettings,
     );
