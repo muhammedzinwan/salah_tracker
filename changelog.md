@@ -365,5 +365,14 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Now only uploads `SalahTracker-unsigned-ipa` for AltStore sideloading
   - Cleaner build output with single IPA file artifact
 
+### Fixed - Notification Actions
+- **Fixed notification action buttons not working**
+  - Added Android notification channel creation in `MainActivity.kt` (required for Android 8.0+)
+  - Channel configured with IMPORTANCE_HIGH, vibration, and LED lights enabled
+  - Updated test notification to include all 4 action buttons (Jamaah, Adah, Qalah, Missed)
+  - Added proper payload to test notification for handler testing
+  - Added debug logging to notification handler for troubleshooting
+  - Test notification now fully functional for verifying notification actions on demand
+
 ### Code Quality
 - **Zero flutter analyze issues** - All code passes static analysis

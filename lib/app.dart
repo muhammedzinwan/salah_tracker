@@ -61,13 +61,22 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
   }
 
   void _handleNotificationTap(NotificationResponse response) {
+    print('🔔 Notification tapped!');
+    print('   Action ID: ${response.actionId}');
+    print('   Payload: ${response.payload}');
+
     final notificationService = ref.read(notificationServiceProvider);
     final prayerRepository = ref.read(prayerRepositoryProvider);
 
     final prayer = notificationService.getPrayerFromPayload(response.payload);
     final status = notificationService.getStatusFromAction(response.actionId);
 
+    print('   Parsed Prayer: $prayer');
+    print('   Parsed Status: $status');
+
     if (prayer != null && status != null) {
+      print('   ✅ Logging prayer: ${prayer.displayName} as ${status.displayName}');
+
       // Log prayer from notification action
       prayerRepository.logPrayer(
         date: DateTime.now(),
@@ -78,6 +87,10 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
 
       // Cancel the notification after logging
       notificationService.cancelPrayerNotification(prayer);
+
+      print('   ✅ Prayer logged and notification cancelled');
+    } else {
+      print('   ❌ Failed to parse prayer or status');
     }
   }
 

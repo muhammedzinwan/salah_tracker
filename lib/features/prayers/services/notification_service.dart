@@ -188,15 +188,46 @@ class NotificationService {
 
   /// Send test notification
   Future<void> sendTestNotification() async {
+    // Create payload for test notification (using Fajr as test prayer)
+    final payload = jsonEncode({
+      'prayer': Prayer.fajr.name,
+      'date': DateTime.now().toIso8601String().split('T')[0],
+    });
+
+    // Android notification details with actions
     const androidDetails = AndroidNotificationDetails(
       AppConstants.notificationChannelId,
       AppConstants.notificationChannelName,
       channelDescription: AppConstants.notificationChannelDescription,
       importance: Importance.high,
       priority: Priority.high,
+      actions: <AndroidNotificationAction>[
+        AndroidNotificationAction(
+          AppConstants.actionJamaah,
+          'Jamaah',
+          showsUserInterface: false,
+        ),
+        AndroidNotificationAction(
+          AppConstants.actionAdah,
+          'Adah',
+          showsUserInterface: false,
+        ),
+        AndroidNotificationAction(
+          AppConstants.actionQalah,
+          'Qalah',
+          showsUserInterface: false,
+        ),
+        AndroidNotificationAction(
+          AppConstants.actionNotPerformed,
+          'Missed',
+          showsUserInterface: false,
+        ),
+      ],
     );
 
+    // iOS notification details with actions
     const iosDetails = DarwinNotificationDetails(
+      categoryIdentifier: AppConstants.notificationCategoryId,
       presentAlert: true,
       presentBadge: true,
       presentSound: true,
@@ -209,9 +240,10 @@ class NotificationService {
 
     await _notifications.show(
       999, // Test notification ID
-      'Test Notification',
-      'Prayer notifications are working correctly!',
+      'Test Prayer Notification',
+      'Tap the action buttons to mark your prayer status!',
       notificationDetails,
+      payload: payload,
     );
   }
 
