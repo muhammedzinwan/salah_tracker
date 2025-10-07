@@ -31,17 +31,42 @@ void main() async {
   // Initialize FlutterLocalNotifications
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
+  // Define iOS notification categories with actions
+  final darwinNotificationCategories = <DarwinNotificationCategory>[
+    DarwinNotificationCategory(
+      AppConstants.notificationCategoryId,
+      actions: <DarwinNotificationAction>[
+        DarwinNotificationAction.plain(
+          AppConstants.actionJamaah,
+          'Jamaah',
+        ),
+        DarwinNotificationAction.plain(
+          AppConstants.actionAdah,
+          'Adah',
+        ),
+        DarwinNotificationAction.plain(
+          AppConstants.actionQalah,
+          'Qalah',
+        ),
+        DarwinNotificationAction.plain(
+          AppConstants.actionNotPerformed,
+          'Missed',
+        ),
+      ],
+    ),
+  ];
+
   // Initialize notifications with iOS categories
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
           IOSFlutterLocalNotificationsPlugin>()
       ?.initialize(
-        const DarwinInitializationSettings(
+        DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
           requestSoundPermission: false,
+          notificationCategories: darwinNotificationCategories,
         ),
-        // Note: categories parameter removed - may not be supported in this version
       );
 
   runApp(

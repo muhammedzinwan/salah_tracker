@@ -328,3 +328,42 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Fixed artifact naming to use descriptive names instead of generic `ios-build`
   - Cleaned up Payload directory after IPA creation to avoid duplicate files
   - Both artifacts retained for 30 days
+
+## [1.0.6] - 2025-10-07
+
+### Added - iOS App Icons
+- **Configured iOS app icon assets**
+  - Created `ios/Runner/Assets.xcassets/AppIcon.appiconset/` directory structure
+  - Generated all required iOS icon sizes using `flutter_launcher_icons` package
+  - Added `flutter_launcher_icons: ^0.13.1` to dev dependencies
+  - Configured icon generation in `pubspec.yaml` with source icon from Android assets
+  - Generated 21 icon files covering all iOS device sizes (20x20 to 1024x1024)
+  - Fixed default Flutter icon issue - app now displays custom icon on iOS devices
+
+### Enhanced - Notification Actions
+- **Added inline prayer marking from notifications**
+  - Added 4 action buttons to all prayer notifications: Jamaah, Adah, Qalah, and Missed
+  - Users can now mark prayers directly from the notification bar without opening the app
+  - Notification automatically dismisses after a prayer status is marked
+  - Updated `app_constants.dart` with `actionNotPerformed` constant for missed prayers
+  - Configured iOS notification categories with `DarwinNotificationAction` in `main.dart`
+  - Updated Android notification actions in `notification_service.dart`
+  - Enhanced `_handleNotificationTap` in `app.dart` to cancel notification after logging
+  - Seamless user experience - mark prayer and notification disappears instantly
+
+### Improved - Settings Screen UI
+- **Reduced text sizes for cleaner settings appearance**
+  - Changed settings tile title from `AppTheme.body` (17px) to `AppTheme.subhead` (15px)
+  - Changed settings tile subtitle from `AppTheme.footnote` (13px) to `AppTheme.caption1` (12px)
+  - Changed settings section headers from `AppTheme.caption1` (12px) to `AppTheme.caption2` (11px)
+  - Text remains left-aligned with improved visual hierarchy
+  - Settings screen now appears more compact and polished
+
+### Changed - CI/CD
+- **Simplified GitHub Actions artifact output**
+  - Removed `SalahTracker-app-bundle` artifact (Runner.app bundle)
+  - Now only uploads `SalahTracker-unsigned-ipa` for AltStore sideloading
+  - Cleaner build output with single IPA file artifact
+
+### Code Quality
+- **Zero flutter analyze issues** - All code passes static analysis

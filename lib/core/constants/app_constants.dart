@@ -32,7 +32,7 @@ class AppConstants {
   static const String actionJamaah = 'jamaah';
   static const String actionAdah = 'adah';
   static const String actionQalah = 'qalah';
-  static const String actionLater = 'later';
+  static const String actionNotPerformed = 'not_performed';
 
   // Calculation
   static const int totalPrayersPerDay = 5;

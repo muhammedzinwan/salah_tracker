@@ -49,7 +49,7 @@ class SettingsTile extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: AppTheme.body.copyWith(
+                  style: AppTheme.subhead.copyWith(
                     color: titleColor,
                   ),
                 ),
@@ -57,7 +57,7 @@ class SettingsTile extends StatelessWidget {
                   const SizedBox(height: 2),
                   Text(
                     subtitle!,
-                    style: AppTheme.footnote,
+                    style: AppTheme.caption1,
                   ),
                 ],
               ],

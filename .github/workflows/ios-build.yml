@@ -54,11 +54,3 @@ jobs:
         name: SalahTracker-unsigned-ipa
         path: SalahTracker.ipa
         retention-days: 30
-
-    - name: Upload Runner.app for sideloading
-      uses: actions/upload-artifact@v4
-      if: success()
-      with:
-        name: SalahTracker-app-bundle
-        path: build/ios/iphoneos/Runner.app
-        retention-days: 30

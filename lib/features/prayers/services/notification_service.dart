@@ -123,8 +123,8 @@ class NotificationService {
             showsUserInterface: false,
           ),
           AndroidNotificationAction(
-            AppConstants.actionLater,
-            'Later',
+            AppConstants.actionNotPerformed,
+            'Missed',
             showsUserInterface: false,
           ),
         ],
@@ -262,6 +262,8 @@ class NotificationService {
         return PrayerStatus.adah;
       case AppConstants.actionQalah:
         return PrayerStatus.qalah;
+      case AppConstants.actionNotPerformed:
+        return PrayerStatus.notPerformed;
       default:
         return null;
     }

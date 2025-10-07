@@ -20,7 +20,7 @@ class SettingsSection extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
           child: Text(
             title,
-            style: AppTheme.caption1.copyWith(
+            style: AppTheme.caption2.copyWith(
               fontWeight: FontWeight.w600,
               letterSpacing: 0.5,
             ),

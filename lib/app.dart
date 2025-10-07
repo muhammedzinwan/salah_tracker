@@ -75,6 +75,9 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
         status: status,
         scheduledTime: DateTime.now(),
       );
+
+      // Cancel the notification after logging
+      notificationService.cancelPrayerNotification(prayer);
     }
   }
 
