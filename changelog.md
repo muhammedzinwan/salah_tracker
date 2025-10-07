@@ -320,3 +320,11 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Added `flutter precache --ios` to ensure iOS build artifacts are downloaded
   - Simplified build process: `flutter build ios` now handles pod install automatically
   - Workflow now generates required iOS project structure during CI/CD build
+
+- **Improved artifact output for iOS builds**
+  - Now uploads two separate artifacts for different sideloading methods:
+    - `SalahTracker-unsigned-ipa`: Traditional IPA file (Payload/Runner.app structure)
+    - `SalahTracker-app-bundle`: Raw Runner.app bundle for use with AltStore, Sideloadly, or similar tools
+  - Fixed artifact naming to use descriptive names instead of generic `ios-build`
+  - Cleaned up Payload directory after IPA creation to avoid duplicate files
+  - Both artifacts retained for 30 days
