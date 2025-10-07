@@ -1,7 +1,7 @@
 class AppConstants {
   // App Info
   static const String appName = 'Salah Tracker';
-  static const String appVersion = '1.0.0';
+  static const String appVersion = '1.0.1';
   static const String appDescription = 'Islamic Prayer Tracker App';
 
   // Default Location (Mumbai, India)

@@ -329,7 +329,7 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Cleaned up Payload directory after IPA creation to avoid duplicate files
   - Both artifacts retained for 30 days
 
-## [1.0.6] - 2025-10-07
+## [1.0.1] - 2025-10-07 (Build 2)
 
 ### Added - iOS App Icons
 - **Configured iOS app icon assets**
@@ -374,5 +374,15 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Added debug logging to notification handler for troubleshooting
   - Test notification now fully functional for verifying notification actions on demand
 
+### Changed - Git Configuration
+- **Updated .gitignore**
+  - Added `test/widget_test.dart` to .gitignore (auto-generated test file)
+  - Prevents committing Flutter-generated test boilerplate
+
 ### Code Quality
 - **Zero flutter analyze issues** - All code passes static analysis
+
+### Version Info
+- **Version bumped to 1.0.1+2** for AltStore updates
+  - Version name: 1.0.1 (user-facing)
+  - Build number: 2 (for app store/sideloading tracking)
