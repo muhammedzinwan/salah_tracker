@@ -50,3 +50,6 @@ app.*.map.json
 /ios/Flutter/Flutter.podspec
 /ios/ServiceDefinitions.json
 /ios/Runner/GeneratedPluginRegistrant.*
+
+# Generated test files
+test/widget_test.dart
