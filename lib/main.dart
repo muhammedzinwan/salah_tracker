@@ -28,6 +28,9 @@ void main() async {
   // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
 
+  // Set installation date if not already set
+  await _setInstallationDateIfNotExists(prefs, prayerLogsBox);
+
   // Initialize FlutterLocalNotifications
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -41,5 +44,43 @@ void main() async {
       ],
       child: const SalahTrackerApp(),
     ),
+  );
+}
+
+/// Sets the installation date if not already set
+/// Uses earliest prayer log date if available, otherwise uses current date
+Future<void> _setInstallationDateIfNotExists(
+  SharedPreferences prefs,
+  Box<PrayerLog> prayerLogsBox,
+) async {
+  // Check if installation date is already set
+  if (prefs.containsKey(AppConstants.keyInstallationDate)) {
+    return;
+  }
+
+  DateTime installationDate;
+
+  // Check if there are existing prayer logs
+  if (prayerLogsBox.isNotEmpty) {
+    // Find the earliest prayer log date
+    final allLogs = prayerLogsBox.values.toList();
+    final earliestLog = allLogs.reduce((a, b) => a.date.isBefore(b.date) ? a : b);
+    installationDate = earliestLog.date;
+  } else {
+    // No existing data, use current date
+    installationDate = DateTime.now();
+  }
+
+  // Normalize to beginning of day
+  final normalizedDate = DateTime(
+    installationDate.year,
+    installationDate.month,
+    installationDate.day,
+  );
+
+  // Store the installation date as ISO string
+  await prefs.setString(
+    AppConstants.keyInstallationDate,
+    normalizedDate.toIso8601String(),
   );
 }

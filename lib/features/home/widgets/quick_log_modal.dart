@@ -202,6 +202,8 @@ class _StatusButton extends StatelessWidget {
         return CupertinoIcons.clock_fill;
       case PrayerStatus.notPerformed:
         return CupertinoIcons.xmark_circle_fill;
+      case PrayerStatus.missed:
+        return CupertinoIcons.exclamationmark_triangle_fill;
     }
   }
 }

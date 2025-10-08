@@ -4,7 +4,8 @@ enum PrayerStatus {
   jamaah,
   adah,
   qalah,
-  notPerformed;
+  notPerformed,
+  missed;
 
   String get displayName {
     switch (this) {
@@ -16,6 +17,8 @@ enum PrayerStatus {
         return 'Qalah';
       case PrayerStatus.notPerformed:
         return 'Not Performed';
+      case PrayerStatus.missed:
+        return 'Missed';
     }
   }
 
@@ -29,6 +32,8 @@ enum PrayerStatus {
         return 'Late/makeup';
       case PrayerStatus.notPerformed:
         return 'Missed';
+      case PrayerStatus.missed:
+        return 'Automatically marked as missed';
     }
   }
 
@@ -41,6 +46,8 @@ enum PrayerStatus {
       case PrayerStatus.qalah:
         return CupertinoColors.systemOrange;
       case PrayerStatus.notPerformed:
+        return CupertinoColors.systemRed;
+      case PrayerStatus.missed:
         return CupertinoColors.systemRed;
     }
   }

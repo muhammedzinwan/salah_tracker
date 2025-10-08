@@ -207,8 +207,21 @@ class _PrayerRow extends ConsumerWidget {
 
   Widget _buildStatusIcon(bool isPassed, bool isLogged, PrayerStatus? status) {
     if (isLogged && status != null) {
+      // Choose different icons based on status
+      IconData icon;
+      switch (status) {
+        case PrayerStatus.missed:
+          icon = CupertinoIcons.exclamationmark_triangle_fill;
+          break;
+        case PrayerStatus.qalah:
+          icon = CupertinoIcons.clock_fill;
+          break;
+        default:
+          icon = CupertinoIcons.checkmark_circle_fill;
+      }
+
       return Icon(
-        CupertinoIcons.checkmark_circle_fill,
+        icon,
         size: 32,
         color: status.color,
       );

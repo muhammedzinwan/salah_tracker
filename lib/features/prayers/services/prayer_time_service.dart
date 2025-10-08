@@ -1,6 +1,7 @@
 import 'package:adhan/adhan.dart';
 import '../models/prayer.dart' as app_prayer;
 import '../models/prayer_time.dart';
+import '../models/prayer_status.dart';
 
 class PrayerTimeService {
   /// Calculate prayer times for a given location and date
@@ -139,5 +140,153 @@ class PrayerTimeService {
     } else {
       return '$minutes min';
     }
+  }
+
+  /// Calculate cutoff times for each prayer (when they should be automatically marked as missed)
+  Future<Map<app_prayer.Prayer, DateTime>> calculatePrayerCutoffTimes({
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+  }) async {
+    final prayerTimes = await calculatePrayerTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: date,
+    );
+
+    // Calculate next day's Fajr for Isha cutoff
+    final nextDayPrayerTimes = await calculatePrayerTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: date.add(const Duration(days: 1)),
+    );
+
+    // Calculate sunrise time for Fajr cutoff
+    final coordinates = Coordinates(latitude, longitude);
+    final params = CalculationMethod.muslim_world_league.getParameters();
+    final prayerTimesObj = PrayerTimes(
+      coordinates,
+      DateComponents.from(date),
+      params,
+    );
+
+    return {
+      // Fajr ends at sunrise
+      app_prayer.Prayer.fajr: prayerTimesObj.sunrise.toLocal(),
+      // Dhuhr ends at Asr time
+      app_prayer.Prayer.dhuhr: prayerTimes[app_prayer.Prayer.asr]!,
+      // Asr ends at Maghrib time
+      app_prayer.Prayer.asr: prayerTimes[app_prayer.Prayer.maghrib]!,
+      // Maghrib ends at Isha time
+      app_prayer.Prayer.maghrib: prayerTimes[app_prayer.Prayer.isha]!,
+      // Isha ends at next day's Fajr
+      app_prayer.Prayer.isha: nextDayPrayerTimes[app_prayer.Prayer.fajr]!,
+    };
+  }
+
+  /// Check if a prayer should be automatically marked as missed
+  Future<bool> shouldBeMarkedAsMissed({
+    required app_prayer.Prayer prayer,
+    required double latitude,
+    required double longitude,
+    required DateTime prayerDate,
+    PrayerStatus? currentStatus,
+  }) async {
+    // If already logged (any status), don't mark as missed
+    if (currentStatus != null) {
+      return false;
+    }
+
+    final cutoffTimes = await calculatePrayerCutoffTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: prayerDate,
+    );
+
+    final cutoffTime = cutoffTimes[prayer];
+    if (cutoffTime == null) return false;
+
+    // Check if current time is past the cutoff time
+    return DateTime.now().isAfter(cutoffTime);
+  }
+
+  /// Get all prayers that should be marked as missed for a given date
+  Future<List<app_prayer.Prayer>> getPrayersToMarkAsMissed({
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+    required Map<app_prayer.Prayer, PrayerStatus?> currentStatuses,
+  }) async {
+    final prayersToMark = <app_prayer.Prayer>[];
+
+    for (final prayer in app_prayer.Prayer.values) {
+      final shouldMark = await shouldBeMarkedAsMissed(
+        prayer: prayer,
+        latitude: latitude,
+        longitude: longitude,
+        prayerDate: date,
+        currentStatus: currentStatuses[prayer],
+      );
+
+      if (shouldMark) {
+        prayersToMark.add(prayer);
+      }
+    }
+
+    return prayersToMark;
+  }
+
+  /// Get the next prayer cutoff time
+  Future<DateTime?> getNextCutoffTime({
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+  }) async {
+    final cutoffTimes = await calculatePrayerCutoffTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: date,
+    );
+
+    final now = DateTime.now();
+    DateTime? nextCutoff;
+
+    for (final cutoffTime in cutoffTimes.values) {
+      if (cutoffTime.isAfter(now)) {
+        if (nextCutoff == null || cutoffTime.isBefore(nextCutoff)) {
+          nextCutoff = cutoffTime;
+        }
+      }
+    }
+
+    return nextCutoff;
+  }
+
+  /// Check if we're currently in a prayer's valid time window
+  Future<bool> isInValidPrayerWindow({
+    required app_prayer.Prayer prayer,
+    required double latitude,
+    required double longitude,
+    required DateTime date,
+  }) async {
+    final prayerTimes = await calculatePrayerTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: date,
+    );
+
+    final cutoffTimes = await calculatePrayerCutoffTimes(
+      latitude: latitude,
+      longitude: longitude,
+      date: date,
+    );
+
+    final prayerTime = prayerTimes[prayer];
+    final cutoffTime = cutoffTimes[prayer];
+
+    if (prayerTime == null || cutoffTime == null) return false;
+
+    final now = DateTime.now();
+    return now.isAfter(prayerTime) && now.isBefore(cutoffTime);
   }
 }

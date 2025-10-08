@@ -20,6 +20,7 @@ class AppConstants {
   static const String keyCountry = 'country';
   static const String keyNotificationsEnabled = 'notifications_enabled';
   static const String keyFirstLaunch = 'first_launch';
+  static const String keyInstallationDate = 'installation_date';
 
   // Notification
   static const String notificationChannelId = 'prayer_reminders';
@@ -38,4 +39,10 @@ class AppConstants {
   static const int totalPrayersPerDay = 5;
   static const int daysInTypicalMonth = 30;
   static const int totalPrayersPerMonth = totalPrayersPerDay * daysInTypicalMonth;
+
+  // Day Transition Timing
+  static const int dayTransitionHour = 0; // Midnight
+  static const int dayTransitionMinute = 0;
+  static const int forcedTransitionHour = 3; // 3 AM cutoff
+  static const int forcedTransitionMinute = 0;
 }

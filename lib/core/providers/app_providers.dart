@@ -43,5 +43,6 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
 // Repository
 final prayerRepositoryProvider = Provider<PrayerRepository>((ref) {
   final box = ref.watch(prayerLogsBoxProvider);
-  return PrayerRepository(box);
+  final prefs = ref.watch(sharedPreferencesProvider);
+  return PrayerRepository(box, prefs);
 });

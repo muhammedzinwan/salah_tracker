@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/prayer.dart';
 import '../models/prayer_status.dart';
 import '../models/prayer_log.dart';
@@ -8,9 +9,10 @@ import '../../../core/constants/app_constants.dart';
 
 class PrayerRepository {
   final Box<PrayerLog> _logsBox;
+  final SharedPreferences? _prefs;
   final Uuid _uuid = const Uuid();
 
-  PrayerRepository(this._logsBox);
+  PrayerRepository(this._logsBox, [this._prefs]);
 
   /// Log a prayer
   Future<void> logPrayer({
@@ -51,15 +53,18 @@ class PrayerRepository {
         .toList();
   }
 
-  /// Get logs for a date range
+  /// Get logs for a date range (respects installation date restrictions)
   List<PrayerLog> getLogsForDateRange(DateTime start, DateTime end) {
     final normalizedStart = AppDateUtils.normalizeDate(start);
     final normalizedEnd = AppDateUtils.normalizeDate(end);
 
+    // Apply installation date restriction
+    final restrictedStart = _getValidStartDate(normalizedStart);
+
     return _logsBox.values.where((log) {
       final logDate = log.date;
-      return (logDate.isAtSameMomentAs(normalizedStart) ||
-              logDate.isAfter(normalizedStart)) &&
+      return (logDate.isAtSameMomentAs(restrictedStart) ||
+              logDate.isAfter(restrictedStart)) &&
           (logDate.isAtSameMomentAs(normalizedEnd) ||
               logDate.isBefore(normalizedEnd));
     }).toList();
@@ -126,6 +131,7 @@ class PrayerRepository {
           qalahCount++;
           break;
         case PrayerStatus.notPerformed:
+        case PrayerStatus.missed:
           missedCount++;
           break;
       }
@@ -164,7 +170,7 @@ class PrayerRepository {
       int missed = 0;
 
       for (final log in prayerLogs) {
-        if (log.status != PrayerStatus.notPerformed) {
+        if (log.status != PrayerStatus.notPerformed && log.status != PrayerStatus.missed) {
           completed++;
         }
         switch (log.status) {
@@ -178,6 +184,7 @@ class PrayerRepository {
             qalah++;
             break;
           case PrayerStatus.notPerformed:
+          case PrayerStatus.missed:
             missed++;
             break;
         }
@@ -195,6 +202,94 @@ class PrayerRepository {
     }
 
     return stats;
+  }
+
+  /// Check if a date is accessible based on installation date
+  bool isDateAccessible(DateTime date) {
+    final installationDate = _getInstallationDate();
+    if (installationDate == null) return true;
+
+    final normalizedDate = AppDateUtils.normalizeDate(date);
+    final normalizedInstallation = AppDateUtils.normalizeDate(installationDate);
+
+    return normalizedDate.isAtSameMomentAs(normalizedInstallation) ||
+           normalizedDate.isAfter(normalizedInstallation);
+  }
+
+  /// Get the installation date from SharedPreferences
+  DateTime? _getInstallationDate() {
+    if (_prefs == null) return null;
+
+    final dateString = _prefs!.getString(AppConstants.keyInstallationDate);
+    if (dateString == null) return null;
+
+    try {
+      return DateTime.parse(dateString);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Get valid start date for queries (respects installation date)
+  DateTime _getValidStartDate(DateTime requestedStart) {
+    final installationDate = _getInstallationDate();
+    if (installationDate == null) return requestedStart;
+
+    final normalizedInstallation = AppDateUtils.normalizeDate(installationDate);
+    final normalizedRequested = AppDateUtils.normalizeDate(requestedStart);
+
+    if (normalizedRequested.isBefore(normalizedInstallation)) {
+      return normalizedInstallation;
+    }
+
+    return normalizedRequested;
+  }
+
+  /// Get accessible date range
+  DateRange getAccessibleDateRange() {
+    final installationDate = _getInstallationDate();
+    final today = AppDateUtils.normalizeDate(DateTime.now());
+
+    if (installationDate == null) {
+      return DateRange(start: today, end: today);
+    }
+
+    final normalizedInstallation = AppDateUtils.normalizeDate(installationDate);
+    return DateRange(start: normalizedInstallation, end: today);
+  }
+
+  /// Auto-mark prayer as missed
+  Future<void> autoMarkPrayerAsMissed({
+    required DateTime date,
+    required Prayer prayer,
+    required DateTime scheduledTime,
+  }) async {
+    // Only mark as missed if not already logged
+    final existingLog = getPrayerLog(date, prayer);
+    if (existingLog != null) return;
+
+    // Only mark if date is accessible
+    if (!isDateAccessible(date)) return;
+
+    await logPrayer(
+      date: date,
+      prayer: prayer,
+      status: PrayerStatus.missed,
+      scheduledTime: scheduledTime,
+    );
+  }
+
+  /// Batch auto-mark multiple prayers as missed
+  Future<void> batchAutoMarkPrayersAsMissed(
+    List<AutoMissedPrayerData> prayersData,
+  ) async {
+    for (final data in prayersData) {
+      await autoMarkPrayerAsMissed(
+        date: data.date,
+        prayer: data.prayer,
+        scheduledTime: data.scheduledTime,
+      );
+    }
   }
 
   /// Generate storage key
@@ -271,5 +366,35 @@ class PrayerStats {
     if (percentage >= 60) return 3;
     if (percentage >= 40) return 2;
     return 1;
+  }
+}
+
+/// Data model for auto-missed prayer information
+class AutoMissedPrayerData {
+  final DateTime date;
+  final Prayer prayer;
+  final DateTime scheduledTime;
+
+  const AutoMissedPrayerData({
+    required this.date,
+    required this.prayer,
+    required this.scheduledTime,
+  });
+}
+
+/// Date range model for repository
+class DateRange {
+  final DateTime start;
+  final DateTime end;
+
+  const DateRange({
+    required this.start,
+    required this.end,
+  });
+
+  bool contains(DateTime date) {
+    final normalizedDate = AppDateUtils.normalizeDate(date);
+    return (normalizedDate.isAtSameMomentAs(start) || normalizedDate.isAfter(start)) &&
+           (normalizedDate.isAtSameMomentAs(end) || normalizedDate.isBefore(end.add(const Duration(days: 1))));
   }
 }

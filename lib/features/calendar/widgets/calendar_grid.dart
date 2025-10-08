@@ -122,6 +122,7 @@ class CalendarGrid extends ConsumerWidget {
                 qalahCount++;
                 break;
               case PrayerStatus.notPerformed:
+              case PrayerStatus.missed:
                 missedCount++;
                 break;
             }

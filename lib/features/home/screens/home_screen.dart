@@ -3,12 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/constants/colors.dart';
 import '../widgets/next_prayer_card.dart';
 import '../widgets/today_prayers_list.dart';
+import '../providers/home_providers.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the automatic missed detection to keep it active
+    ref.watch(automaticMissedDetectionProvider);
+
     return CupertinoPageScaffold(
       backgroundColor: AppColors.background,
       navigationBar: const CupertinoNavigationBar(
