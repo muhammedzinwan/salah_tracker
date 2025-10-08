@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../../core/constants/colors.dart';
 import '../../../core/utils/date_utils.dart';
+import '../../../core/providers/date_providers.dart';
 import '../providers/calendar_providers.dart';
 import '../../prayers/models/prayer_status.dart';
 
@@ -23,12 +24,14 @@ class CalendarGrid extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final monthLogs = ref.watch(monthLogsProvider);
+    final installationDateAsync = ref.watch(installationDateProvider);
 
     return TableCalendar(
       firstDay: DateTime(2020, 1, 1),
       lastDay: DateTime(2030, 12, 31),
       focusedDay: selectedMonth,
       selectedDayPredicate: (day) => AppDateUtils.isSameDay(day, selectedDate),
+      enabledDayPredicate: (day) => _isDateAccessible(day, installationDateAsync),
       calendarFormat: CalendarFormat.month,
       startingDayOfWeek: StartingDayOfWeek.sunday,
       headerVisible: false,
@@ -57,6 +60,10 @@ class CalendarGrid extends ConsumerWidget {
           color: AppColors.tertiaryBackground.withOpacity(0.3),
           borderRadius: BorderRadius.circular(8),
         ),
+        disabledDecoration: BoxDecoration(
+          color: AppColors.tertiaryBackground.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
         weekendDecoration: BoxDecoration(
           color: AppColors.secondaryBackground,
           borderRadius: BorderRadius.circular(8),
@@ -81,6 +88,10 @@ class CalendarGrid extends ConsumerWidget {
         ),
         outsideTextStyle: TextStyle(
           color: AppColors.textTertiary.withOpacity(0.5),
+          fontSize: 16,
+        ),
+        disabledTextStyle: TextStyle(
+          color: AppColors.textTertiary.withOpacity(0.3),
           fontSize: 16,
         ),
       ),
@@ -155,6 +166,32 @@ class CalendarGrid extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+
+  /// Check if a specific date is accessible based on installation date
+  bool _isDateAccessible(
+    DateTime date,
+    AsyncValue<DateTime?> installationDateAsync,
+  ) {
+    return installationDateAsync.when(
+      data: (installationDate) {
+        if (installationDate == null) return true; // Allow if no installation date
+
+        // Normalize both dates for comparison
+        final normalizedDate = DateTime(date.year, date.month, date.day);
+        final normalizedInstallation = DateTime(
+          installationDate.year,
+          installationDate.month,
+          installationDate.day,
+        );
+
+        // Allow if date is on or after installation date
+        return normalizedDate.isAtSameMomentAs(normalizedInstallation) ||
+               normalizedDate.isAfter(normalizedInstallation);
+      },
+      loading: () => true, // Allow while loading to prevent flicker
+      error: (_, __) => true, // Allow on error
     );
   }
 }

@@ -11,6 +11,9 @@ class PrayerTime {
 
   bool get isPassed => DateTime.now().isAfter(time);
 
+  /// Check if this prayer can be marked/logged (time has arrived)
+  bool get canBeMarked => DateTime.now().isAtSameMomentAs(time) || DateTime.now().isAfter(time);
+
   Duration get timeUntil {
     final now = DateTime.now();
     return time.difference(now);

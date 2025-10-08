@@ -117,10 +117,11 @@ class _PrayerRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isPassed = prayerTime.isPassed;
     final isLogged = log != null;
+    final canBeMarked = prayerTime.canBeMarked;
 
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      onPressed: () {
+      onPressed: canBeMarked ? () {
         showCupertinoModalPopup(
           context: context,
           builder: (context) => QuickLogModal(
@@ -129,7 +130,7 @@ class _PrayerRow extends ConsumerWidget {
             existingStatus: log?.status,
           ),
         );
-      },
+      } : null,
       child: Row(
         children: [
           _buildStatusIcon(isPassed, isLogged, log?.status),
@@ -140,10 +141,12 @@ class _PrayerRow extends ConsumerWidget {
               children: [
                 Text(
                   prayerTime.prayer.displayName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
+                    color: canBeMarked
+                        ? AppColors.textPrimary
+                        : AppColors.textTertiary,
                   ),
                 ),
                 if (isLogged && log != null) ...[
@@ -162,10 +165,12 @@ class _PrayerRow extends ConsumerWidget {
           ),
           Text(
             AppDateUtils.formatTime12Hour(prayerTime.time),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
-              color: AppColors.textSecondary,
+              color: canBeMarked
+                  ? AppColors.textSecondary
+                  : AppColors.textTertiary,
             ),
           ),
           const SizedBox(width: 8),
