@@ -420,7 +420,7 @@ All notable changes to the Salah Tracker project will be documented in this file
   - Version name: 1.0.1 (user-facing)
   - Build number: 3 (internal tracking)
 
-## [1.0.3] - 2025-10-09 (Build 4)
+## [1.0.3] - 2025-10-09 (Build 5)
 
 ### Added - Interactive Calendar
 - **Made calendar day detail modal fully interactive for marking prayers**
