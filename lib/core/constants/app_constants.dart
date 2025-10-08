@@ -4,10 +4,10 @@ class AppConstants {
   static const String appVersion = '1.0.1';
   static const String appDescription = 'Islamic Prayer Tracker App';
 
-  // Default Location (Mumbai, India)
-  static const double defaultLatitude = 19.0760;
-  static const double defaultLongitude = 72.8777;
-  static const String defaultCity = 'Mumbai';
+  // Default Location (Kerala, India)
+  static const double defaultLatitude = 11.8745;
+  static const double defaultLongitude = 75.3704;
+  static const String defaultCity = 'Kannur';
   static const String defaultCountry = 'India';
 
   // Database
