@@ -25,6 +25,10 @@ class NotificationService {
       requestAlertPermission: true,
       requestBadgePermission: true,
       requestSoundPermission: true,
+      requestCriticalPermission: false,
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
       notificationCategories: iosNotificationCategories,
     );
 
@@ -44,7 +48,7 @@ class NotificationService {
 
   /// Request notification permissions
   Future<bool> requestPermissions() async {
-    // iOS permissions
+    // iOS permissions - request explicitly with all options
     final iosPermission = await _notifications
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
@@ -52,6 +56,7 @@ class NotificationService {
           alert: true,
           badge: true,
           sound: true,
+          critical: false,
         );
 
     // Android 13+ permissions

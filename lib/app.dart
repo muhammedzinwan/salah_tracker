@@ -32,20 +32,29 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
           DarwinNotificationAction.plain(
             AppConstants.actionJamaah,
             'Jamaah',
+            options: <DarwinNotificationActionOption>{},
           ),
           DarwinNotificationAction.plain(
             AppConstants.actionAdah,
             'Adah',
+            options: <DarwinNotificationActionOption>{},
           ),
           DarwinNotificationAction.plain(
             AppConstants.actionQalah,
             'Qalah',
+            options: <DarwinNotificationActionOption>{},
           ),
           DarwinNotificationAction.plain(
             AppConstants.actionNotPerformed,
             'Missed',
+            options: <DarwinNotificationActionOption>{
+              DarwinNotificationActionOption.destructive,
+            },
           ),
         ],
+        options: <DarwinNotificationCategoryOption>{
+          DarwinNotificationCategoryOption.customDismissAction,
+        },
       ),
     ];
 
