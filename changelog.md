@@ -419,3 +419,62 @@ All notable changes to the Salah Tracker project will be documented in this file
 - **Version bumped to 1.0.1+3** for next build update
   - Version name: 1.0.1 (user-facing)
   - Build number: 3 (internal tracking)
+
+## [1.0.3] - 2025-10-09 (Build 4)
+
+### Added - Interactive Calendar
+- **Made calendar day detail modal fully interactive for marking prayers**
+  - Created new `PrayerLogModal` widget (`lib/features/calendar/widgets/prayer_log_modal.dart`) that accepts a date parameter
+  - Users can now mark/update prayers for ANY accessible past date to clear backlogs
+  - Modal shows Jamaah, Adah, and Qalah status buttons for quick prayer logging
+  - Displays selected date and scheduled prayer time for context
+  - Added `selectedDatePrayerTimesProvider` to `calendar_providers.dart` to fetch prayer times for any selected date
+
+### Enhanced - Calendar UI/UX
+- **Updated day detail modal to be tappable**
+  - Made `_PrayerDetailRow` in `day_detail_modal.dart` tappable (wrapped in `CupertinoButton`)
+  - Tapping any prayer row opens `PrayerLogModal` with the calendar date
+  - Added chevron icon on unlogged prayers to indicate interactivity
+  - Added proper visual distinction for auto-missed prayers
+  - Shows exclamation triangle icon (`CupertinoIcons.exclamationmark_triangle_fill`) for `PrayerStatus.missed`
+  - Displays "Missed" status text in red for auto-marked prayers
+  - Consistent visual treatment with home screen prayer list
+
+### Fixed - Calendar Functionality
+- **Fixed inability to mark past prayers from calendar**
+  - Previously, calendar was read-only and only showed logged prayers
+  - Now users can tap any prayer on any accessible date to mark it
+  - Proper date parameter passed to repository (not hardcoded to `DateTime.now()`)
+  - Enables clearing prayer backlogs from previous days
+
+### Fixed - Calendar Prayer Logging
+- **Fixed prayer logging from calendar not working**
+  - Converted `monthLogsProvider` from `Provider` to `StreamProvider` that watches Hive changes
+  - Converted `selectedDateLogsProvider` from `Provider` to `StreamProvider` that watches Hive changes
+  - Updated `day_detail_modal.dart` to use reactive `selectedDateLogsProvider` instead of directly fetching logs
+  - Updated `calendar_grid.dart` to handle `AsyncValue` from `monthLogsProvider`
+  - Calendar UI now updates instantly when prayers are marked/updated
+  - Both calendar grid and day detail modal are now reactive to database changes
+
+### Enhanced - Calendar Prayer Marking Logic
+- **Only past prayers can be marked from calendar**
+  - Added time-based validation in `_PrayerDetailRow` to check if prayer time has passed
+  - Future prayers (not yet time) are disabled and cannot be marked
+  - Disabled prayers show grayed out with "Not yet time" label
+  - Clock icon displayed for future prayers instead of chevron
+  - Only prayers that have already occurred can be logged from calendar
+
+### Added - Visual Alert for Missed Prayers
+- **Red alert indicator on calendar dates with missed prayers**
+  - Small red exclamation icon (`CupertinoIcons.exclamationmark_circle_fill`) shown in top-right of calendar date
+  - Alert appears if date has any prayers with `PrayerStatus.missed` or `PrayerStatus.notPerformed`
+  - Makes it easy to identify dates with backlogs at a glance
+  - Positioned at top-right (size: 8px) to not interfere with bottom status marker
+  - Color: `CupertinoColors.systemRed` for high visibility
+
+### Code Quality
+- **Zero flutter analyze issues** in app code (lib/ directory)
+- All new code follows existing architecture patterns
+- Consistent with Cupertino design language
+- Proper trailing commas for Flutter formatting
+- Correct type annotations for StreamProviders

@@ -23,10 +23,11 @@ class CalendarGrid extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final monthLogs = ref.watch(monthLogsProvider);
+    final monthLogsAsync = ref.watch(monthLogsProvider);
     final installationDateAsync = ref.watch(installationDateProvider);
 
-    return TableCalendar(
+    return monthLogsAsync.when(
+      data: (monthLogs) => TableCalendar(
       firstDay: DateTime(2020, 1, 1),
       lastDay: DateTime(2030, 12, 31),
       focusedDay: selectedMonth,
@@ -139,6 +140,9 @@ class CalendarGrid extends ConsumerWidget {
             }
           }
 
+          // Check if this date has any missed prayers
+          final hasMissedPrayers = missedCount > 0;
+
           // Determine marker color
           Color markerColor;
           if (missedCount > 0) {
@@ -153,18 +157,48 @@ class CalendarGrid extends ConsumerWidget {
             markerColor = AppColors.textTertiary;
           }
 
-          return Positioned(
-            bottom: 2,
-            child: Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                color: markerColor,
-                shape: BoxShape.circle,
+          return Stack(
+            children: [
+              // Main status marker (bottom center)
+              Positioned(
+                bottom: 2,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Container(
+                    width: 6,
+                    height: 6,
+                    decoration: BoxDecoration(
+                      color: markerColor,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              // Red alert indicator for missed prayers (top right)
+              if (hasMissedPrayers)
+                const Positioned(
+                  top: 2,
+                  right: 2,
+                  child: Icon(
+                    CupertinoIcons.exclamationmark_circle_fill,
+                    size: 8,
+                    color: CupertinoColors.systemRed,
+                  ),
+                ),
+            ],
           );
         },
+      ),
+    ),
+      loading: () => const Center(
+        child: CupertinoActivityIndicator(),
+      ),
+      error: (error, stack) => const Center(
+        child: Text(
+          'Error loading calendar',
+          style: TextStyle(color: AppColors.error),
+        ),
       ),
     );
   }
