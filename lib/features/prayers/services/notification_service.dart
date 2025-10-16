@@ -153,7 +153,7 @@ class NotificationService {
       await _notifications.zonedSchedule(
         prayer.index, // Use prayer index as notification ID
         'Time for ${prayer.displayName}',
-        'It\'s ${_formatTime(scheduledTime)}',
+        'It\'s ${_formatTime(scheduledTime)} - Long press to mark prayer',
         scheduledDate,
         notificationDetails,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
@@ -248,7 +248,7 @@ class NotificationService {
     await _notifications.show(
       999, // Test notification ID
       'Test Prayer Notification',
-      'Tap the action buttons to mark your prayer status!',
+      'Long press to mark your prayer status!',
       notificationDetails,
       payload: payload,
     );

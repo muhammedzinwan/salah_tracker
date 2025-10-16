@@ -4,7 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
 import 'core/providers/app_providers.dart';
+import 'core/providers/date_providers.dart';
 import 'features/home/screens/home_screen.dart';
+import 'features/home/providers/home_providers.dart';
 import 'features/calendar/screens/calendar_screen.dart';
 import 'features/statistics/screens/statistics_screen.dart';
 import 'features/settings/screens/settings_screen.dart';
@@ -16,11 +18,45 @@ class SalahTrackerApp extends ConsumerStatefulWidget {
   ConsumerState<SalahTrackerApp> createState() => _SalahTrackerAppState();
 }
 
-class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
+class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initializeApp();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    // When app comes to foreground (resumed), refresh all providers
+    if (state == AppLifecycleState.resumed) {
+      print('📱 App resumed - refreshing providers');
+      _refreshAppState();
+    }
+  }
+
+  /// Refresh app state when returning from background
+  void _refreshAppState() {
+    // Invalidate date providers to recalculate current date
+    ref.invalidate(currentAppDateProvider);
+    ref.invalidate(todayDateProvider);
+
+    // Invalidate prayer time providers to recalculate times
+    ref.invalidate(todayPrayerTimesProvider);
+    ref.invalidate(nextPrayerProvider);
+    ref.invalidate(currentPrayerProvider);
+
+    // Invalidate prayer logs to refresh UI
+    ref.invalidate(todayPrayerLogsProvider);
+    ref.invalidate(monthlyStatsProvider);
   }
 
   Future<void> _initializeApp() async {
@@ -104,28 +140,60 @@ class _SalahTrackerAppState extends ConsumerState<SalahTrackerApp> {
     final prayerRepository = ref.read(prayerRepositoryProvider);
 
     final prayer = notificationService.getPrayerFromPayload(response.payload);
+    final dateString = notificationService.getDateFromPayload(response.payload);
     final status = notificationService.getStatusFromAction(response.actionId);
 
     print('   Parsed Prayer: $prayer');
+    print('   Parsed Date: $dateString');
     print('   Parsed Status: $status');
 
-    if (prayer != null && status != null) {
+    // Only proceed if we have both prayer and status (action button was tapped)
+    if (prayer != null && status != null && dateString != null) {
       print('   ✅ Logging prayer: ${prayer.displayName} as ${status.displayName}');
 
-      // Log prayer from notification action
-      prayerRepository.logPrayer(
-        date: DateTime.now(),
-        prayer: prayer,
-        status: status,
-        scheduledTime: DateTime.now(),
-      );
+      try {
+        // Parse the date from payload
+        final date = DateTime.parse(dateString);
 
-      // Cancel the notification after logging
-      notificationService.cancelPrayerNotification(prayer);
+        // Get the scheduled time for this prayer on this date
+        final prayerTimeService = ref.read(prayerTimeServiceProvider);
+        final locationService = ref.read(locationServiceProvider);
+        final location = locationService.getSavedOrDefaultLocation();
 
-      print('   ✅ Prayer logged and notification cancelled');
+        // Calculate prayer times to get the correct scheduled time
+        prayerTimeService.calculatePrayerTimes(
+          latitude: location.latitude,
+          longitude: location.longitude,
+          date: date,
+        ).then((prayerTimes) {
+          final scheduledTime = prayerTimes[prayer];
+
+          if (scheduledTime != null) {
+            // Log prayer from notification action with correct date and time
+            prayerRepository.logPrayer(
+              date: date,
+              prayer: prayer,
+              status: status,
+              scheduledTime: scheduledTime,
+            );
+
+            // Cancel the notification after logging
+            notificationService.cancelPrayerNotification(prayer);
+
+            print('   ✅ Prayer logged and notification cancelled');
+          } else {
+            print('   ❌ Could not get scheduled time for prayer');
+          }
+        }).catchError((error) {
+          print('   ❌ Error calculating prayer times: $error');
+        });
+      } catch (e) {
+        print('   ❌ Error parsing date or logging prayer: $e');
+      }
+    } else if (prayer == null || dateString == null) {
+      print('   ❌ Failed to parse prayer or date from payload');
     } else {
-      print('   ❌ Failed to parse prayer or status');
+      print('   ℹ️  Notification tapped without action button');
     }
   }
 
