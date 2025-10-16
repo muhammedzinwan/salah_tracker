@@ -1,7 +1,7 @@
 name: salah_tracker
 description: Islamic Prayer Tracker App - Track your daily prayers with Jamaah, Adah, Qalah status
 publish_to: 'none'
-version: 1.0.1+6
+version: 1.0.1+7
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -24,9 +24,8 @@ dependencies:
   flutter_local_notifications: ^17.0.0
   timezone: ^0.9.2
 
-  # Location - Using manual selection for now
-  # geolocator: ^11.0.0
-  # geocoding: ^3.0.0
+  # Location - Manual city search with geocoding
+  geocoding: ^3.0.0
 
   # UI/Charts
   fl_chart: ^0.66.0

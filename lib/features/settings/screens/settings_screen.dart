@@ -6,6 +6,7 @@ import '../../../core/providers/app_providers.dart';
 import '../providers/settings_providers.dart';
 import '../widgets/settings_section.dart';
 import '../widgets/settings_tile.dart';
+import '../widgets/location_search_modal.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -47,9 +48,42 @@ class SettingsScreen extends ConsumerWidget {
                 SettingsTile(
                   icon: CupertinoIcons.location_fill,
                   title: 'Current Location',
-                  subtitle: '${location.city}, ${location.country}',
+                  subtitle: location.name,
                   onTap: () {
                     _showLocationInfo(context, location);
+                  },
+                ),
+                SettingsTile(
+                  icon: CupertinoIcons.search,
+                  title: 'Change Location',
+                  subtitle: 'Search for your city',
+                  onTap: () async {
+                    final result = await Navigator.of(context).push<Map<String, dynamic>>(
+                      CupertinoPageRoute(
+                        builder: (context) => const LocationSearchModal(),
+                      ),
+                    );
+
+                    if (result != null && context.mounted) {
+                      // Update location
+                      await locationService.updateLocation(
+                        latitude: result['latitude'] as double,
+                        longitude: result['longitude'] as double,
+                        name: result['name'] as String,
+                      );
+
+                      // Refresh UI
+                      ref.invalidate(locationServiceProvider);
+
+                      // Show success message
+                      if (context.mounted) {
+                        _showAlert(
+                          context,
+                          'Location Updated',
+                          'Prayer times will be recalculated for ${result['name']}',
+                        );
+                      }
+                    }
                   },
                 ),
               ],
@@ -168,8 +202,8 @@ class SettingsScreen extends ConsumerWidget {
         content: Column(
           children: [
             const SizedBox(height: 12),
-            Text('City: ${location.city}'),
-            Text('Country: ${location.country}'),
+            Text('Location: ${location.name}'),
+            const SizedBox(height: 8),
             Text('Latitude: ${location.latitude.toStringAsFixed(4)}'),
             Text('Longitude: ${location.longitude.toStringAsFixed(4)}'),
           ],
@@ -262,6 +296,15 @@ class SettingsScreen extends ConsumerWidget {
               style: TextStyle(fontSize: 13),
             ),
             SizedBox(height: 12),
+            Text(
+              'Developed by NeyoZyn',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: AppColors.primary,
+              ),
+            ),
+            SizedBox(height: 8),
             Text(
               'May Allah accept all our prayers.',
               style: TextStyle(

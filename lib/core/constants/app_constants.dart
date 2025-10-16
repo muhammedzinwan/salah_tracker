@@ -16,8 +16,9 @@ class AppConstants {
   // Shared Preferences Keys
   static const String keyLatitude = 'latitude';
   static const String keyLongitude = 'longitude';
-  static const String keyCity = 'city';
-  static const String keyCountry = 'country';
+  static const String keyCity = 'city'; // Legacy - kept for backwards compatibility
+  static const String keyCountry = 'country'; // Legacy - kept for backwards compatibility
+  static const String keyLocationName = 'location_name'; // New format
   static const String keyNotificationsEnabled = 'notifications_enabled';
   static const String keyFirstLaunch = 'first_launch';
   static const String keyInstallationDate = 'installation_date';

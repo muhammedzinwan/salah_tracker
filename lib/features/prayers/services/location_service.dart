@@ -4,35 +4,34 @@ import '../../../core/constants/app_constants.dart';
 class LocationData {
   final double latitude;
   final double longitude;
-  final String city;
-  final String country;
+  final String name; // City name or location name
 
   const LocationData({
     required this.latitude,
     required this.longitude,
-    required this.city,
-    required this.country,
+    required this.name,
   });
+
+  // Keep backwards compatibility with old city/country format
+  String get city => name.split(',').first.trim();
+  String get country => name.contains(',') ? name.split(',').last.trim() : '';
 
   Map<String, dynamic> toJson() => {
         'latitude': latitude,
         'longitude': longitude,
-        'city': city,
-        'country': country,
+        'name': name,
       };
 
   factory LocationData.fromJson(Map<String, dynamic> json) => LocationData(
         latitude: json['latitude'] as double,
         longitude: json['longitude'] as double,
-        city: json['city'] as String,
-        country: json['country'] as String,
+        name: json['name'] as String? ?? '${json['city']}, ${json['country']}',
       );
 
   factory LocationData.defaultLocation() => const LocationData(
         latitude: AppConstants.defaultLatitude,
         longitude: AppConstants.defaultLongitude,
-        city: AppConstants.defaultCity,
-        country: AppConstants.defaultCountry,
+        name: '${AppConstants.defaultCity}, ${AppConstants.defaultCountry}',
       );
 }
 
@@ -51,6 +50,11 @@ class LocationService {
   LocationData? _getSavedLocation() {
     final latitude = _prefs.getDouble(AppConstants.keyLatitude);
     final longitude = _prefs.getDouble(AppConstants.keyLongitude);
+
+    // Try new format first (name)
+    final name = _prefs.getString(AppConstants.keyLocationName);
+
+    // Fallback to old format (city, country)
     final city = _prefs.getString(AppConstants.keyCity);
     final country = _prefs.getString(AppConstants.keyCountry);
 
@@ -61,8 +65,9 @@ class LocationService {
     return LocationData(
       latitude: latitude,
       longitude: longitude,
-      city: city ?? AppConstants.defaultCity,
-      country: country ?? AppConstants.defaultCountry,
+      name: name ?? (city != null && country != null
+          ? '$city, $country'
+          : '${AppConstants.defaultCity}, ${AppConstants.defaultCountry}'),
     );
   }
 
@@ -70,8 +75,7 @@ class LocationService {
   Future<void> _saveLocation(LocationData location) async {
     await _prefs.setDouble(AppConstants.keyLatitude, location.latitude);
     await _prefs.setDouble(AppConstants.keyLongitude, location.longitude);
-    await _prefs.setString(AppConstants.keyCity, location.city);
-    await _prefs.setString(AppConstants.keyCountry, location.country);
+    await _prefs.setString(AppConstants.keyLocationName, location.name);
   }
 
   /// Get saved or default location synchronously
@@ -83,14 +87,12 @@ class LocationService {
   Future<void> updateLocation({
     required double latitude,
     required double longitude,
-    required String city,
-    required String country,
+    required String name,
   }) async {
     final locationData = LocationData(
       latitude: latitude,
       longitude: longitude,
-      city: city,
-      country: country,
+      name: name,
     );
     await _saveLocation(locationData);
   }

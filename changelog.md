@@ -536,3 +536,54 @@ All notable changes to the Salah Tracker project will be documented in this file
 - **Version: 1.0.1+6**
   - Version name: 1.0.1 (user-facing)
   - Build number: 6 (internal tracking)
+
+## [1.0.5] - 2025-10-16 (Build 7)
+
+### Added - Manual Location Selection
+- **Added city search functionality for location selection**
+  - Created `LocationSearchModal` widget (`lib/features/settings/widgets/location_search_modal.dart`)
+  - Users can now search for any city in the world using a search bar
+  - Integrated `geocoding` package (v3.0.0) for city name → coordinates conversion
+  - Real-time search with loading indicator and error handling
+  - Clean, modern UI with empty state and search results list
+  - No GPS permissions required - fully manual city selection
+
+### Enhanced - Location Management
+- **Updated LocationService for better location handling**
+  - Modified `LocationData` model to use single `name` field instead of separate city/country
+  - Added backwards compatibility for existing location data (old city/country format)
+  - Added `keyLocationName` constant to `app_constants.dart` for new location name storage
+  - `LocationService.updateLocation()` now accepts single location name parameter
+  - Location name displayed throughout app as "City, Country" format
+
+### Enhanced - Settings Screen
+- **Added "Change Location" button to Settings**
+  - New settings tile with search icon for easy location changes
+  - Opens location search modal when tapped
+  - Automatically invalidates providers and recalculates prayer times after location change
+  - Shows success alert with selected location name after update
+  - Updated "Current Location" tile to display location name instead of separate city/country
+  - Updated location details dialog to show unified location name
+
+### Changed - Location Display
+- **Simplified location display across the app**
+  - Settings now show "Kannur, India" instead of separate "City: Kannur" and "Country: India"
+  - Location info dialog updated with cleaner single-line location display
+  - Default location format updated to match new pattern
+
+### Code Quality
+- **Zero flutter analyze issues** - All code passes static analysis
+- Proper error handling in location search with user-friendly error messages
+- Loading states for async operations
+- Clean navigation with proper result handling
+
+### Dependencies
+- **Added geocoding: ^3.0.0** for city search functionality
+  - Converts city names to latitude/longitude coordinates
+  - Reverse geocoding for getting location names from coordinates
+  - Works without GPS permissions (manual search only)
+
+### Version Info
+- **Version: 1.0.1+7**
+  - Version name: 1.0.1 (user-facing)
+  - Build number: 7 (internal tracking)
