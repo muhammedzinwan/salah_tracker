@@ -804,3 +804,33 @@ All notable changes to the Salah Tracker project will be documented in this file
 - Repository now follows Flutter and mobile development best practices for version control
 - Cleaner commit history going forward
 - Reduced risk of committing sensitive local paths or configurations
+
+## [1.0.1] - 2025-10-22 (Build 8)
+
+### Changed - Version Management
+- **Incremented build number from 7 to 8 for app installation and packaging**
+  - Version remains at 1.0.1 (user-facing)
+  - Build number updated to 8 (internal tracking for AltStore/TestFlight)
+  - Enables installation of new build alongside previous versions
+  - Prepares app for distribution with recent improvements
+
+### Added - Android App Signing
+- **Configured proper Android app signing for release builds**
+  - Created upload keystore (`android/app/upload-keystore.jks`) for signing beta and release builds
+  - Added `android/key.properties` file to store signing credentials
+  - Updated `android/app/build.gradle` to use release signing configuration
+  - Removes "Unknown Source" warnings during APK installation
+  - Provides secure, professional signed builds for beta testers
+  - Keystore valid for 10,000 days (~27 years)
+- **Protected signing files in version control**
+  - Added `android/key.properties` to `.gitignore`
+  - Added `android/app/upload-keystore.jks` to `.gitignore`
+  - Added wildcard patterns `*.jks` and `*.keystore` to `.gitignore`
+  - Prevents accidental commits of sensitive signing credentials
+  - Ensures keystore remains private and secure
+
+### Security
+- **Keystore and signing credentials are NOT committed to Git**
+- Developer must maintain secure backup of keystore and passwords
+- Same keystore must be used for all future releases (cannot be changed)
+- Loss of keystore means inability to update existing app installations

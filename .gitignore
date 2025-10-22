@@ -53,6 +53,12 @@ android/gradlew
 android/gradlew.bat
 android/gradle/wrapper/gradle-wrapper.jar
 
+# App Signing - NEVER COMMIT THESE FILES
+android/key.properties
+android/app/upload-keystore.jks
+*.jks
+*.keystore
+
 # iOS
 /ios/Pods/
 /ios/.symlinks/
