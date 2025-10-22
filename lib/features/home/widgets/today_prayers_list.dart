@@ -121,7 +121,7 @@ class _PrayerRow extends ConsumerWidget {
 
     // Get contextual prayer name (Jumu'ah for Friday Dhuhr with Jama'ah)
     final prayerName = prayerTime.prayer.getContextualName(
-      prayerTime.date ?? DateTime.now(),
+      prayerTime.time,
       log?.status,
     );
 
@@ -144,7 +144,7 @@ class _PrayerRow extends ConsumerWidget {
             isLogged,
             log?.status,
             prayerTime.prayer,
-            prayerTime.date ?? DateTime.now(),
+            prayerTime.time,
           ),
           const SizedBox(width: 12),
           Expanded(
