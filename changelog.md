@@ -587,3 +587,120 @@ All notable changes to the Salah Tracker project will be documented in this file
 - **Version: 1.0.1+7**
   - Version name: 1.0.1 (user-facing)
   - Build number: 7 (internal tracking)
+
+## [1.0.6] - 2025-10-22
+
+### Fixed - Missed Prayer Detection System
+- **Fixed prayers showing "not logged" instead of being auto-marked as "missed"**
+  - Root cause: Isha prayer cutoff was set to next day's Fajr time (~5:30 AM), but forced day transition occurred at 3:00 AM
+  - This created a blind spot between 3:00 AM - 5:30 AM where yesterday's Isha was abandoned before its cutoff time passed
+  - The automatic detection only checked the current app date, never looking back at previous days
+  - Result: Prayers from previous days were never auto-marked as missed after day transition
+
+### Changed - Prayer Cutoff Times
+- **Updated Isha prayer cutoff time to align with forced transition**
+  - Changed from next day's Fajr time to 4:00 AM (fixed time)
+  - Modified `calculatePrayerCutoffTimes()` in `prayer_time_service.dart:145-183`
+  - Isha now gets auto-marked as missed at 4 AM if not logged
+  - Ensures Isha is marked before day transition occurs
+  - Aligns with Islamic principle that Isha must be prayed before Fajr
+  - Removed dependency on calculating next day's prayer times for Isha cutoff
+
+### Changed - Day Transition Timing
+- **Updated forced transition time from 3 AM to 4 AM**
+  - Modified `forcedTransitionHour` constant from 3 to 4 in `app_constants.dart:47`
+  - Grace period now: 00:00 - 04:00 (allows 4 hours to log previous day's prayers)
+  - Prevents blind spot that was causing prayers to be abandoned
+  - More user-friendly: gives extra hour for users who pray Isha very late
+
+### Added - Transition Safety Hook
+- **Added automatic cleanup of incomplete prayers during day transition**
+  - Created `_markYesterdayIncompletePrayers()` helper function in `date_providers.dart:104-136`
+  - Runs automatically when forced transition occurs at 4 AM
+  - Checks all of yesterday's prayers and auto-marks any unlogged prayers as missed
+  - Provides safety net to catch any prayers that slipped through detection cycle
+  - Ensures no prayers are ever abandoned without being marked
+  - Error handling prevents blocking day transition if cleanup fails
+
+### Technical Details
+- **Files Modified:**
+  - `lib/core/constants/app_constants.dart` - Updated forced transition hour
+  - `lib/features/prayers/services/prayer_time_service.dart` - Changed Isha cutoff logic
+  - `lib/core/providers/date_providers.dart` - Added transition cleanup hook
+
+### Expected Behavior
+- ✅ All prayers will be auto-marked as missed when their cutoff time passes
+- ✅ No more prayers showing "not logged" when they should be "missed"
+- ✅ Isha being missed will not block next day's Fajr from being marked
+- ✅ Day transition at 4 AM cleans up any incomplete prayers from yesterday
+- ✅ No performance impact (no multi-day checking every 5 minutes)
+- ✅ Grace period extended to 4 hours (00:00-04:00) for late prayer logging
+
+### Code Quality
+- **Zero flutter analyze issues** - All changes pass static analysis with no errors or warnings
+
+## [1.0.7] - 2025-10-22
+
+### Fixed - Statistics Real-Time Updates
+- **Fixed statistics not refreshing when prayer data changes**
+  - Converted `selectedMonthStatsProvider` from static `Provider` to reactive `StreamProvider` in `stats_providers.dart`
+  - Converted `prayerWiseStatsProvider` from static `Provider` to reactive `StreamProvider` in `stats_providers.dart`
+  - Both providers now use Hive's `.watch()` to listen for database changes
+  - Statistics page now updates instantly when prayers are marked from any screen (home, calendar, notifications)
+  - Users can switch to statistics page and see changes immediately without needing to reopen the app
+  - Updated all widgets consuming these providers to handle `AsyncValue` pattern:
+    - `stats_summary.dart` - Added loading and error states
+    - `stats_chart.dart` - Added loading and error states
+    - `prayer_wise_breakdown.dart` - Added loading and error states
+
+### Fixed - Statistics Calculation Fairness
+- **Fixed statistics calculation to respect app installation date**
+  - Previously calculated total prayers as `days in month × 5`, which was unfair for users who installed mid-month
+  - Example: User installing on October 15th showed stats as if they should have prayed all 31 days (155 prayers), making them appear to have missed prayers before app installation
+  - Modified `getMonthlyStats()` in `prayer_repository.dart` to use installation date as effective start
+  - Modified `getPrayerWiseStats()` in `prayer_repository.dart` to calculate accessible days based on installation date
+  - Added `_calculateAccessiblePrayersInMonth()` helper method that:
+    - Determines effective start date (later of month start or installation date)
+    - Returns 0 if installation date is after month end (future months)
+    - Calculates accurate prayer count: `accessible days × 5`
+  - Added `_calculateAccessibleDaysInMonth()` helper method for per-prayer statistics
+  - Statistics now only count prayers from installation date onwards
+  - Fair and accurate representation of user's actual prayer performance
+
+### Enhanced - Installation Date Tracking
+- **Installation date tracking already implemented** (verified from existing codebase)
+  - `main.dart` sets installation date on first launch in `_setInstallationDateIfNotExists()`
+  - Uses earliest prayer log date if data exists, otherwise uses current date
+  - Stored in SharedPreferences with key `keyInstallationDate`
+  - Repository methods like `isDateAccessible()`, `getLogsForDateRange()`, and `_getValidStartDate()` already respect installation date
+  - Statistics calculation now also respects this date for fair representation
+
+### Technical Details
+- **Files Modified:**
+  - `lib/features/statistics/providers/stats_providers.dart` - Made providers reactive with StreamProvider
+  - `lib/features/statistics/widgets/stats_summary.dart` - Added AsyncValue handling
+  - `lib/features/statistics/widgets/stats_chart.dart` - Added AsyncValue handling
+  - `lib/features/statistics/widgets/prayer_wise_breakdown.dart` - Added AsyncValue handling
+  - `lib/features/prayers/repositories/prayer_repository.dart` - Updated statistics calculation methods
+
+### Expected Behavior
+- ✅ Statistics refresh instantly when prayers are marked from any screen
+- ✅ No need to close and reopen the app to see updated statistics
+- ✅ Statistics accurately reflect prayers from installation date onwards
+- ✅ Users who install mid-month see fair statistics (not penalized for pre-installation days)
+- ✅ Future months show 0 accessible prayers (user hasn't reached them yet)
+- ✅ Smooth user experience with loading and error states
+
+### Removed - UI Simplification
+- **Removed prayer-wise breakdown section from statistics screen**
+  - Removed the star rating section that showed individual prayer statistics (Fajr, Dhuhr, Asr, etc.)
+  - Statistics screen now shows only: Overall Performance and Breakdown by Type chart
+  - Cleaner, more focused statistics view
+  - Removed `PrayerWiseBreakdown` widget import from `statistics_screen.dart`
+  - Widget file still exists at `lib/features/statistics/widgets/prayer_wise_breakdown.dart` (can be restored if needed)
+
+### Code Quality
+- **Zero flutter analyze issues** - All changes pass static analysis with no errors or warnings
+- Proper trailing commas for Flutter formatting
+- Consistent with existing reactive provider patterns (matches `monthlyStatsProvider` in `home_providers.dart`)
+- Clean error handling with user-friendly error messages

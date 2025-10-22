@@ -110,7 +110,7 @@ class PrayerRepository {
     };
   }
 
-  /// Get statistics for a month
+  /// Get statistics for a month (respects installation date)
   MonthlyStats getMonthlyStats(int year, int month) {
     final logs = getLogsForMonth(year, month);
 
@@ -138,8 +138,9 @@ class PrayerRepository {
     }
 
     final totalCompleted = jamaahCount + adahCount + qalahCount;
-    final daysInMonth = DateTime(year, month + 1, 0).day;
-    final totalPrayersInMonth = daysInMonth * AppConstants.totalPrayersPerDay;
+
+    // Calculate total prayers based on accessible days in the month
+    final totalPrayersInMonth = _calculateAccessiblePrayersInMonth(year, month);
 
     return MonthlyStats(
       year: year,
@@ -153,10 +154,42 @@ class PrayerRepository {
     );
   }
 
-  /// Get prayer-wise breakdown for a month
+  /// Calculate the number of accessible prayers in a month (respects installation date)
+  int _calculateAccessiblePrayersInMonth(int year, int month) {
+    final monthStart = DateTime(year, month, 1);
+    final monthEnd = DateTime(year, month + 1, 0);
+    final installationDate = _getInstallationDate();
+
+    DateTime effectiveStart;
+    if (installationDate != null) {
+      final normalizedInstallation = AppDateUtils.normalizeDate(installationDate);
+
+      // If installation date is after the month start, use installation date
+      if (normalizedInstallation.isAfter(monthStart)) {
+        // If installation date is after the month end, return 0
+        if (normalizedInstallation.isAfter(monthEnd)) {
+          return 0;
+        }
+        effectiveStart = normalizedInstallation;
+      } else {
+        effectiveStart = monthStart;
+      }
+    } else {
+      effectiveStart = monthStart;
+    }
+
+    // Calculate the number of days between effective start and month end
+    final accessibleDays = monthEnd.difference(effectiveStart).inDays + 1;
+
+    return accessibleDays * AppConstants.totalPrayersPerDay;
+  }
+
+  /// Get prayer-wise breakdown for a month (respects installation date)
   Map<Prayer, PrayerStats> getPrayerWiseStats(int year, int month) {
     final logs = getLogsForMonth(year, month);
-    final daysInMonth = DateTime(year, month + 1, 0).day;
+
+    // Calculate accessible days based on installation date
+    final accessibleDays = _calculateAccessibleDaysInMonth(year, month);
 
     final stats = <Prayer, PrayerStats>{};
 
@@ -193,7 +226,7 @@ class PrayerRepository {
       stats[prayer] = PrayerStats(
         prayer: prayer,
         completed: completed,
-        total: daysInMonth,
+        total: accessibleDays,
         jamaahCount: jamaah,
         adahCount: adah,
         qalahCount: qalah,
@@ -202,6 +235,34 @@ class PrayerRepository {
     }
 
     return stats;
+  }
+
+  /// Calculate the number of accessible days in a month (respects installation date)
+  int _calculateAccessibleDaysInMonth(int year, int month) {
+    final monthStart = DateTime(year, month, 1);
+    final monthEnd = DateTime(year, month + 1, 0);
+    final installationDate = _getInstallationDate();
+
+    DateTime effectiveStart;
+    if (installationDate != null) {
+      final normalizedInstallation = AppDateUtils.normalizeDate(installationDate);
+
+      // If installation date is after the month start, use installation date
+      if (normalizedInstallation.isAfter(monthStart)) {
+        // If installation date is after the month end, return 0
+        if (normalizedInstallation.isAfter(monthEnd)) {
+          return 0;
+        }
+        effectiveStart = normalizedInstallation;
+      } else {
+        effectiveStart = monthStart;
+      }
+    } else {
+      effectiveStart = monthStart;
+    }
+
+    // Calculate the number of days between effective start and month end
+    return monthEnd.difference(effectiveStart).inDays + 1;
   }
 
   /// Check if a date is accessible based on installation date

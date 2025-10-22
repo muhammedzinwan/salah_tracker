@@ -62,12 +62,14 @@ Future<bool> _shouldTransitionToNewDay(Ref ref, DateTime now) async {
     // Get yesterday's date (the date we might be transitioning from)
     final yesterday = _normalizeDate(now.subtract(const Duration(days: 1)));
 
-    // If it's past the forced transition time (3 AM), always transition
+    // If it's past the forced transition time (4 AM), always transition
     if (now.hour >= AppConstants.forcedTransitionHour) {
+      // Before transitioning, mark any incomplete prayers from yesterday as missed
+      await _markYesterdayIncompletePrayers(ref, yesterday);
       return true;
     }
 
-    // If it's past midnight (00:00) but before forced transition (3 AM)
+    // If it's past midnight (00:00) but before forced transition (4 AM)
     if (now.hour >= AppConstants.dayTransitionHour &&
         now.hour < AppConstants.forcedTransitionHour) {
 
@@ -95,6 +97,41 @@ Future<bool> _shouldTransitionToNewDay(Ref ref, DateTime now) async {
   } catch (e) {
     // On error, default to transitioning after forced time
     return now.hour >= AppConstants.forcedTransitionHour;
+  }
+}
+
+/// Marks yesterday's incomplete prayers as missed during forced transition
+Future<void> _markYesterdayIncompletePrayers(Ref ref, DateTime yesterday) async {
+  try {
+    final repository = ref.read(prayerRepositoryProvider);
+    final prayerTimeService = ref.read(prayerTimeServiceProvider);
+    final locationService = ref.read(locationServiceProvider);
+
+    final location = locationService.getSavedOrDefaultLocation();
+    final yesterdayLogs = repository.getLogsForDate(yesterday);
+
+    // Get prayer times for yesterday
+    final prayerTimes = await prayerTimeService.calculatePrayerTimes(
+      latitude: location.latitude,
+      longitude: location.longitude,
+      date: yesterday,
+    );
+
+    // Mark each unlogged prayer as missed
+    for (final prayer in yesterdayLogs.keys) {
+      if (yesterdayLogs[prayer] == null) {
+        final scheduledTime = prayerTimes[prayer];
+        if (scheduledTime != null) {
+          await repository.autoMarkPrayerAsMissed(
+            date: yesterday,
+            prayer: prayer,
+            scheduledTime: scheduledTime,
+          );
+        }
+      }
+    }
+  } catch (e) {
+    // Silently handle errors to prevent blocking day transition
   }
 }
 

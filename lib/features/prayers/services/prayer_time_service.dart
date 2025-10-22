@@ -154,13 +154,6 @@ class PrayerTimeService {
       date: date,
     );
 
-    // Calculate next day's Fajr for Isha cutoff
-    final nextDayPrayerTimes = await calculatePrayerTimes(
-      latitude: latitude,
-      longitude: longitude,
-      date: date.add(const Duration(days: 1)),
-    );
-
     // Calculate sunrise time for Fajr cutoff
     final coordinates = Coordinates(latitude, longitude);
     final params = CalculationMethod.muslim_world_league.getParameters();
@@ -169,6 +162,11 @@ class PrayerTimeService {
       DateComponents.from(date),
       params,
     );
+
+    // Isha cutoff is set to 4 AM (forced transition time) of the next day
+    // This ensures Isha is marked as missed before the day transitions
+    final nextDay = date.add(const Duration(days: 1));
+    final ishaCutoff = DateTime(nextDay.year, nextDay.month, nextDay.day, 4, 0);
 
     return {
       // Fajr ends at sunrise
@@ -179,8 +177,8 @@ class PrayerTimeService {
       app_prayer.Prayer.asr: prayerTimes[app_prayer.Prayer.maghrib]!,
       // Maghrib ends at Isha time
       app_prayer.Prayer.maghrib: prayerTimes[app_prayer.Prayer.isha]!,
-      // Isha ends at next day's Fajr
-      app_prayer.Prayer.isha: nextDayPrayerTimes[app_prayer.Prayer.fajr]!,
+      // Isha ends at 4 AM next day (forced transition time)
+      app_prayer.Prayer.isha: ishaCutoff,
     };
   }
 

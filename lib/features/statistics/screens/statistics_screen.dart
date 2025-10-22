@@ -5,7 +5,6 @@ import '../../../core/utils/date_utils.dart';
 import '../providers/stats_providers.dart';
 import '../widgets/stats_summary.dart';
 import '../widgets/stats_chart.dart';
-import '../widgets/prayer_wise_breakdown.dart';
 
 class StatisticsScreen extends ConsumerWidget {
   const StatisticsScreen({super.key});
@@ -61,8 +60,6 @@ class StatisticsScreen extends ConsumerWidget {
             StatsSummary(),
             SizedBox(height: 24),
             StatsChart(),
-            SizedBox(height: 24),
-            PrayerWiseBreakdown(),
             SizedBox(height: 16),
           ],
         ),

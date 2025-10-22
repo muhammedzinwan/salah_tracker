@@ -10,49 +10,68 @@ class StatsSummary extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final stats = ref.watch(selectedMonthStatsProvider);
+    final statsAsync = ref.watch(selectedMonthStatsProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'OVERALL PERFORMANCE',
-          style: AppTheme.headline,
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.secondaryBackground,
-            borderRadius: BorderRadius.circular(12),
+    return statsAsync.when(
+      data: (stats) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'OVERALL PERFORMANCE',
+            style: AppTheme.headline,
           ),
-          child: Column(
-            children: [
-              _SummaryRow(
-                label: 'Total Prayers',
-                value: '${stats.totalPrayers}',
-                subtitle: '5 prayers × ${stats.totalPrayers ~/ 5} days',
-              ),
-              const SizedBox(height: 12),
-              const Divider(height: 1, color: AppColors.tertiaryBackground),
-              const SizedBox(height: 12),
-              _SummaryRow(
-                label: 'Completed',
-                value: '${stats.totalCompleted}',
-                subtitle: '${stats.completionPercentage.toStringAsFixed(1)}%',
-                valueColor: AppColors.success,
-              ),
-              const SizedBox(height: 12),
-              _SummaryRow(
-                label: 'Missed',
-                value: '${stats.missedCount}',
-                subtitle: '${stats.missedPercentage.toStringAsFixed(1)}%',
-                valueColor: AppColors.error,
-              ),
-            ],
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.secondaryBackground,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                _SummaryRow(
+                  label: 'Total Prayers',
+                  value: '${stats.totalPrayers}',
+                  subtitle: '5 prayers × ${stats.totalPrayers ~/ 5} days',
+                ),
+                const SizedBox(height: 12),
+                const Divider(height: 1, color: AppColors.tertiaryBackground),
+                const SizedBox(height: 12),
+                _SummaryRow(
+                  label: 'Completed',
+                  value: '${stats.totalCompleted}',
+                  subtitle: '${stats.completionPercentage.toStringAsFixed(1)}%',
+                  valueColor: AppColors.success,
+                ),
+                const SizedBox(height: 12),
+                _SummaryRow(
+                  label: 'Missed',
+                  value: '${stats.missedCount}',
+                  subtitle: '${stats.missedPercentage.toStringAsFixed(1)}%',
+                  valueColor: AppColors.error,
+                ),
+              ],
+            ),
           ),
+        ],
+      ),
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: CupertinoActivityIndicator(),
         ),
-      ],
+      ),
+      error: (error, stack) => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.error.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text(
+          'Error loading statistics',
+          style: TextStyle(color: AppColors.error),
+        ),
+      ),
     );
   }
 }

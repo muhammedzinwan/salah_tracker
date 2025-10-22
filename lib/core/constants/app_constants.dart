@@ -44,6 +44,6 @@ class AppConstants {
   // Day Transition Timing
   static const int dayTransitionHour = 0; // Midnight
   static const int dayTransitionMinute = 0;
-  static const int forcedTransitionHour = 3; // 3 AM cutoff
+  static const int forcedTransitionHour = 4; // 4 AM cutoff
   static const int forcedTransitionMinute = 0;
 }

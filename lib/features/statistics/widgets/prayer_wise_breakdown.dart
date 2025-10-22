@@ -11,42 +11,61 @@ class PrayerWiseBreakdown extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final prayerStats = ref.watch(prayerWiseStatsProvider);
+    final prayerStatsAsync = ref.watch(prayerWiseStatsProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'PRAYER-WISE BREAKDOWN',
-          style: AppTheme.headline,
-        ),
-        const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: AppColors.secondaryBackground,
-            borderRadius: BorderRadius.circular(12),
+    return prayerStatsAsync.when(
+      data: (prayerStats) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'PRAYER-WISE BREAKDOWN',
+            style: AppTheme.headline,
           ),
-          child: Column(
-            children: [
-              for (var i = 0; i < Prayer.values.length; i++) ...[
-                _PrayerStatRow(
-                  prayer: Prayer.values[i],
-                  stats: prayerStats[Prayer.values[i]]!,
-                ),
-                if (i < Prayer.values.length - 1)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: Divider(
-                      height: 1,
-                      color: AppColors.tertiaryBackground,
-                    ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: AppColors.secondaryBackground,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              children: [
+                for (var i = 0; i < Prayer.values.length; i++) ...[
+                  _PrayerStatRow(
+                    prayer: Prayer.values[i],
+                    stats: prayerStats[Prayer.values[i]]!,
                   ),
+                  if (i < Prayer.values.length - 1)
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 12),
+                      child: Divider(
+                        height: 1,
+                        color: AppColors.tertiaryBackground,
+                      ),
+                    ),
+                ],
               ],
-            ],
+            ),
           ),
+        ],
+      ),
+      loading: () => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(32),
+          child: CupertinoActivityIndicator(),
         ),
-      ],
+      ),
+      error: (error, stack) => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.error.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const Text(
+          'Error loading prayer breakdown',
+          style: TextStyle(color: AppColors.error),
+        ),
+      ),
     );
   }
 }
