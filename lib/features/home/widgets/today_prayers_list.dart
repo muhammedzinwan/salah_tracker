@@ -119,6 +119,12 @@ class _PrayerRow extends ConsumerWidget {
     final isLogged = log != null;
     final canBeMarked = prayerTime.canBeMarked;
 
+    // Get contextual prayer name (Jumu'ah for Friday Dhuhr with Jama'ah)
+    final prayerName = prayerTime.prayer.getContextualName(
+      prayerTime.date ?? DateTime.now(),
+      log?.status,
+    );
+
     return CupertinoButton(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       onPressed: canBeMarked ? () {
@@ -133,14 +139,20 @@ class _PrayerRow extends ConsumerWidget {
       } : null,
       child: Row(
         children: [
-          _buildStatusIcon(isPassed, isLogged, log?.status),
+          _buildStatusIcon(
+            isPassed,
+            isLogged,
+            log?.status,
+            prayerTime.prayer,
+            prayerTime.date ?? DateTime.now(),
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  prayerTime.prayer.displayName,
+                  prayerName,
                   style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
@@ -210,19 +222,33 @@ class _PrayerRow extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatusIcon(bool isPassed, bool isLogged, PrayerStatus? status) {
+  Widget _buildStatusIcon(
+    bool isPassed,
+    bool isLogged,
+    PrayerStatus? status,
+    dynamic prayer,
+    DateTime date,
+  ) {
     if (isLogged && status != null) {
+      // Check if this is Jumu'ah (Friday Dhuhr prayed as Jama'ah)
+      final isJumuah = prayer.isJumuah(date, status);
+
       // Choose different icons based on status
       IconData icon;
-      switch (status) {
-        case PrayerStatus.missed:
-          icon = CupertinoIcons.exclamationmark_triangle_fill;
-          break;
-        case PrayerStatus.qalah:
-          icon = CupertinoIcons.clock_fill;
-          break;
-        default:
-          icon = CupertinoIcons.checkmark_circle_fill;
+      if (isJumuah) {
+        // Special star icon for Jumu'ah
+        icon = CupertinoIcons.star_fill;
+      } else {
+        switch (status) {
+          case PrayerStatus.missed:
+            icon = CupertinoIcons.exclamationmark_triangle_fill;
+            break;
+          case PrayerStatus.qalah:
+            icon = CupertinoIcons.clock_fill;
+            break;
+          default:
+            icon = CupertinoIcons.checkmark_circle_fill;
+        }
       }
 
       return Icon(

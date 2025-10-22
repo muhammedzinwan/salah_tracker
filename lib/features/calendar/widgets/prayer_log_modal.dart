@@ -44,10 +44,10 @@ class PrayerLogModal extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              // Title
+              // Title - use contextual name for Jumu'ah
               Text(
                 existingStatus != null
-                    ? 'Update ${prayer.displayName}'
+                    ? 'Update ${prayer.getContextualName(date, existingStatus)}'
                     : 'Log ${prayer.displayName}',
                 style: AppTheme.title2,
               ),

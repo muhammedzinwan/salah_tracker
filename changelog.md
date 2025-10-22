@@ -704,3 +704,103 @@ All notable changes to the Salah Tracker project will be documented in this file
 - Proper trailing commas for Flutter formatting
 - Consistent with existing reactive provider patterns (matches `monthlyStatsProvider` in `home_providers.dart`)
 - Clean error handling with user-friendly error messages
+
+## [1.0.8] - 2025-10-22
+
+### Added - Jumu'ah (Friday Prayer) Support
+- **Implemented Islamically accurate Jumu'ah display logic**
+  - Added contextual prayer name methods to `Prayer` enum in `prayer.dart`:
+    - `getContextualName(DateTime date, PrayerStatus? status)` - Returns "Jumu'ah" for Friday Dhuhr ONLY when prayed as Jama'ah
+    - `getContextualArabicName(DateTime date, PrayerStatus? status)` - Returns "صلاة الجمعة" for Friday Dhuhr Jama'ah
+    - `isJumuah(DateTime date, PrayerStatus? status)` - Helper to check if prayer qualifies as Jumu'ah
+  - Jumu'ah is only valid when performed in congregation (Jama'ah status)
+  - If Friday Dhuhr is prayed alone (Adah) or made up later (Qada), it correctly displays as "Dhuhr"
+  - Follows Islamic ruling: Jumu'ah can only be performed in congregation
+
+### Enhanced - UI for Jumu'ah Recognition
+- **Special star icon (⭐) for Jumu'ah prayers**
+  - Updated `today_prayers_list.dart` to show star icon (`CupertinoIcons.star_fill`) instead of checkmark for Jumu'ah
+  - Updated `day_detail_modal.dart` to show star icon for Jumu'ah in calendar view
+  - Star icon highlights the special importance of Friday congregational prayer
+  - Regular checkmark icon shown for all other prayer statuses
+- **Contextual prayer names throughout the app**
+  - Home screen prayer list shows "Jumu'ah" for Friday Dhuhr when marked as Jama'ah
+  - Calendar day detail shows "Jumu'ah" for appropriate Friday prayers
+  - Prayer log modal shows "Update Jumu'ah" when editing Friday Dhuhr Jama'ah
+  - Statistics keep "Dhuhr" for aggregated monthly data (intentional - mixes Friday and makeup prayers)
+
+### Technical Implementation
+- **Files Modified:**
+  - `lib/features/prayers/models/prayer.dart` - Added contextual name methods
+  - `lib/features/home/widgets/today_prayers_list.dart` - Updated to use contextual names and star icon
+  - `lib/features/calendar/widgets/day_detail_modal.dart` - Updated to use contextual names and star icon
+  - `lib/features/calendar/widgets/prayer_log_modal.dart` - Updated modal title to show contextual name
+
+### Islamic Accuracy Details
+- ✅ **Friday + Dhuhr time + Jama'ah status = "Jumu'ah" with ⭐ icon**
+- ✅ **Friday + Dhuhr time + (Adah/Qada/Missed) = "Dhuhr" with regular icon**
+- ✅ Follows the ruling that Jumu'ah is only valid when prayed in congregation
+- ✅ If someone prays alone on Friday at Dhuhr time, they pray 4 rakat Dhuhr (not 2 rakat Jumu'ah)
+- ✅ Database remains unchanged - Dhuhr stored as Dhuhr with appropriate status
+- ✅ No migration needed - context-aware display layer only
+
+### Code Quality
+- **Zero flutter analyze issues** - All changes pass static analysis with no errors or warnings
+- Proper null safety with dynamic status checking
+- Consistent with existing codebase architecture
+- No breaking changes to existing data or functionality
+- Backward compatible with all existing prayer logs
+
+## [1.0.9] - 2025-10-22
+
+### Fixed - Git Repository Cleanup
+- **Removed build artifacts and generated files from version control**
+  - Identified and removed 22 Android Gradle cache files from `.gradle/` directory (previously incorrectly tracked)
+  - Removed `android/local.properties` (machine-specific local SDK paths)
+  - Removed `android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java` (Flutter-generated file)
+  - Removed Gradle wrapper executables: `android/gradlew`, `android/gradlew.bat`, `android/gradle/wrapper/gradle-wrapper.jar`
+  - Removed iOS generated files: `ios/Flutter/Generated.xcconfig`, `ios/Flutter/flutter_export_environment.sh`
+  - Removed `devtools_options.yaml` (Flutter DevTools machine-specific configuration)
+
+### Enhanced - .gitignore Configuration
+- **Updated .gitignore to prevent future tracking of build artifacts**
+  - Added `devtools_options.yaml` to Flutter/Dart section
+  - Added comprehensive Android section with proper excludes:
+    - `.gradle/` and `android/.gradle/` (Gradle cache directories)
+    - `android/local.properties` (local SDK configuration)
+    - `android/app/src/main/java/io/flutter/plugins/GeneratedPluginRegistrant.java` (Flutter-generated plugin registry)
+    - `android/gradlew`, `android/gradlew.bat` (Gradle wrapper scripts)
+    - `android/gradle/wrapper/gradle-wrapper.jar` (Gradle wrapper binary)
+  - Enhanced iOS section with additional excludes:
+    - `ios/Flutter/Generated.xcconfig` (Flutter-generated Xcode configuration)
+    - `ios/Flutter/flutter_export_environment.sh` (Flutter build environment script)
+
+### Repository Health
+- **Reduced repository bloat by removing 30+ unnecessary tracked files**
+  - Files removed from tracking but remain in local filesystem (no data loss)
+  - Future builds will no longer commit generated files
+  - Cleaner git history and smaller repository size
+  - Proper separation between source code and build artifacts
+  - Team members won't see merge conflicts on machine-specific files
+
+### Best Practices Applied
+- ✅ Build artifacts excluded from version control
+- ✅ Machine-specific configuration files excluded
+- ✅ Generated code excluded (regenerated on build)
+- ✅ Gradle cache excluded (recreated automatically)
+- ✅ Flutter-generated files excluded
+- ✅ Follows standard Flutter .gitignore best practices
+
+### Files Still Tracked (Intentional)
+- `android/build.gradle` - Project-level build configuration (should be tracked)
+- `android/app/build.gradle` - App-level build configuration (should be tracked)
+- `android/gradle.properties` - Project Gradle settings (should be tracked)
+- `android/settings.gradle` - Gradle settings (should be tracked)
+- `android/gradle/wrapper/gradle-wrapper.properties` - Gradle version specification (should be tracked)
+- All iOS Xcode project files in `ios/Runner.xcodeproj/` (should be tracked)
+- All source code, assets, and configuration files
+
+### Code Quality
+- Repository now follows Flutter and mobile development best practices for version control
+- Cleaner commit history going forward
+- Reduced risk of committing sensitive local paths or configurations

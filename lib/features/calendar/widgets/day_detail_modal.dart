@@ -184,6 +184,9 @@ class _PrayerDetailRow extends StatelessWidget {
     final hasPassed = scheduledTime.isBefore(now);
     final canMark = hasPassed;
 
+    // Get contextual prayer name (Jumu'ah for Friday Dhuhr with Jama'ah)
+    final prayerName = prayer.getContextualName(date, status);
+
     return CupertinoButton(
       padding: EdgeInsets.zero,
       onPressed: canMark ? () {
@@ -209,7 +212,7 @@ class _PrayerDetailRow extends StatelessWidget {
         child: Row(
           children: [
             Icon(
-              _getStatusIcon(isLogged, status),
+              _getStatusIcon(isLogged, status, prayer, date),
               size: 32,
               color: isLogged
                 ? status.color
@@ -221,7 +224,7 @@ class _PrayerDetailRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    prayer.displayName,
+                    prayerName,
                     style: AppTheme.headline.copyWith(
                       color: canMark ? AppColors.textPrimary : AppColors.textTertiary,
                     ),
@@ -271,8 +274,16 @@ class _PrayerDetailRow extends StatelessWidget {
     );
   }
 
-  IconData _getStatusIcon(bool isLogged, PrayerStatus? status) {
+  IconData _getStatusIcon(bool isLogged, PrayerStatus? status, Prayer prayer, DateTime date) {
     if (isLogged && status != null) {
+      // Check if this is Jumu'ah (Friday Dhuhr prayed as Jama'ah)
+      final isJumuah = prayer.isJumuah(date, status);
+
+      if (isJumuah) {
+        // Special star icon for Jumu'ah
+        return CupertinoIcons.star_fill;
+      }
+
       switch (status) {
         case PrayerStatus.missed:
           return CupertinoIcons.exclamationmark_triangle_fill;
